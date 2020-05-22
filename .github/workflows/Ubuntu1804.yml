@@ -30,8 +30,7 @@ jobs:
     - name: Install cpplint
       run: |
         pip3 install cpplint
-        echo "::set-env name=PATH::$HOME/.local/bin:${PATH}"
-        cpplint --version
+        echo "::add-path::$HOME/.local/bin"
 
     - name: Configure
       id: configure
