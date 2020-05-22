@@ -1,0 +1,30 @@
+# Workflow that builds the docs on linux (assume cross plat is fine)
+# This should only be trigered by any commits that modify the docs directory.
+
+name: docs
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      # Anything in the docs dir
+      - "docs/**"
+      # Or this workflow.
+      - ".github/workflows/docs.yml"
+  pull_request: [ master ]
+    paths:
+      # Anything in the docs dir
+      - "docs/**"
+      # Or this workflow.
+      - ".github/workflows/docs.yml"
+
+jobs:
+  build:
+    runs-on:  ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: list docs
+      run: |
+        ls docs
