@@ -1,7 +1,5 @@
-
 #include <cstdlib>
 #include "hello.hpp"
-
 
 // Entry point
 int main(int, char *[]) {
