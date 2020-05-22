@@ -1,21 +1,35 @@
 # Ubuntu 18.04
 name: Ubuntu1604
 
+# Only build if relevant files changes?
 on:
   push:
     branches: [ master ]
-    # paths:
-    #   # All files by default
-    #   - "**"
-    #   # Don't trigger for files which don't cause build changes
-    #   - "!.gitignore"
-    #   - "!**.md"
-    #   # Don't trigger for workflow changes
-    #   - "!.github/workflows/**"
-    #   # Except for this workflow
-    #   - ".github/workflows/${{ name }}"
+    paths:
+      # Add everything
+      - "**"
+      # Exclude some things
+      - "!docs/**"
+      - "!.gitignore"
+      - "!**.md"
+      - "!.github/**"
+      - "!scripts/**"
+      # Re-include special cases
+      - ".github/workflows/Ubuntu1804.yml"
   # Trigger on all PRs?
-  # pull_request:
+  pull_request:
+    paths:
+      # Add everything
+      - "**"
+      # Exclude some things
+      - "!docs/**"
+      - "!.gitignore"
+      - "!**.md"
+      - "!.github/**"
+      - "!scripts/**"
+      # Re-include special cases
+      - ".github/workflows/Ubuntu1804.yml"
+
 
 jobs:
   build:
