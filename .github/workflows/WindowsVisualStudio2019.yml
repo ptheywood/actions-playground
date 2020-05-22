@@ -24,11 +24,6 @@ on:
       - "**CMakeLists.txt"
       # Anything in a directory called `cmake`
       - "**cmake/**"
-  # Can one on: statement have multiple differnt push configs for separate branches?
-  push:
-    branches: [ windows** ]
-    paths:
-      - "**"
   pull_request:
     branches: [ master ]
     paths:
