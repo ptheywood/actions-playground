@@ -1,0 +1,67 @@
+# VS2019 on Windows-2019
+name: WindowsVisualStudio2019
+
+on:
+  # push:
+    # branches: [ master ]
+  #   paths:
+  #     # All files by default
+  #     - "**"
+  #     # Don't trigger for files which don't cause build changes
+  #     - "!.gitignore"
+  #     - "!**.md"
+  #     # Don't trigger for workflow changes
+  #     - "!.github/workflows/**"
+  #     # Except for this workflow
+  #     - ".github/workflows/${{ name }}"
+  # # Trigger on all PRs?
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+    env:
+      visual_studio: "Visual Studio 16 2019"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install cpplint
+      run: |
+        python -m pip install --upgrade cpplint
+
+    - name: Configure CMake
+      id: configure
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -G "${{ env.visual_studio }}" -A x64
+      shell: bash
+
+    - name: Configure Error Processing
+      run: |
+          if [[ -f "CMakeFiles/CMakeOutput.log" ]]; then
+            echo "---- CMakeFiles/CMakeOutput.log"
+            cat CMakeFiles/CMakeOutput.log
+            echo "----"
+          fi
+          if [[ -f "CMakeFiles/CMakeError.log" ]]; then
+            echo "---- CMakeFiles/CMakeError.log"
+            cat CMakeFiles/CMakeError.log
+            echo "----"
+          fi
+      shell: bash
+      working-directory: build
+      if: ${{ failure() && steps.configure.outcome == 'failure' }}
+
+    - name: Build
+      run: cmake --build . --config Release --target ALL_BUILD --verbose
+      working-directory: build
+    
+    - name: Test
+      run: ctest  -VV -j2
+      shell: bash
+      working-directory: build

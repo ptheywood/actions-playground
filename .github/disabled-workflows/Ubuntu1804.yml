@@ -1,0 +1,67 @@
+# Ubuntu 18.04
+name: Ubuntu1604
+
+on:
+  push:
+    branches: [ master ]
+    # paths:
+    #   # All files by default
+    #   - "**"
+    #   # Don't trigger for files which don't cause build changes
+    #   - "!.gitignore"
+    #   - "!**.md"
+    #   # Don't trigger for workflow changes
+    #   - "!.github/workflows/**"
+    #   # Except for this workflow
+    #   - ".github/workflows/${{ name }}"
+  # Trigger on all PRs?
+  # pull_request:
+
+jobs:
+  build:
+    runs-on:  ubuntu-18.04
+    strategy:
+      fail-fast: false
+    env:
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install cpplint
+      run: |
+        pip3 install cpplint
+        # echo "::set-env name=PATH::$HOME/.local/bin:${PATH}"
+        cpplint --version
+
+    - name: Configure
+      id: configure
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+      shell: bash
+
+    - name: Configure Error Processing
+      run: |
+          if [[ -f "CMakeFiles/CMakeOutput.log" ]]; then
+            echo "---- CMakeFiles/CMakeOutput.log"
+            cat CMakeFiles/CMakeOutput.log
+            echo "----"
+          fi
+          if [[ -f "CMakeFiles/CMakeError.log" ]]; then
+            echo "---- CMakeFiles/CMakeError.log"
+            cat CMakeFiles/CMakeError.log
+            echo "----"
+          fi
+      shell: bash
+      working-directory: build
+      if: ${{ failure() && steps.configure.outcome == 'failure' }}
+
+    - name: Build
+      run: cmake --build . --target all --verbose -j 2
+      working-directory: build
+    
+    - name: Test
+      run: ctest  -VV -j2
+      shell: bash
+      working-directory: build
