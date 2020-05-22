@@ -1,21 +1,48 @@
 # VS2019 on Windows-2019
 name: WindowsVisualStudio2019
 
+# Use an opt-in only approach based on file type.
+# Advantages - clear how it works
+# Disadvantages - potentially have to change it more often.
 on:
   push:
     branches: [ master ]
-  #   paths:
-  #     # All files by default
-  #     - "**"
-  #     # Don't trigger for files which don't cause build changes
-  #     - "!.gitignore"
-  #     - "!**.md"
-  #     # Don't trigger for workflow changes
-  #     - "!.github/workflows/**"
-  #     # Except for this workflow
-  #     - ".github/workflows/${{ name }}"
-  # # Trigger on all PRs?
+    paths:
+      # The workflow
+        - ".github/workflows/WindowsVisualStudio2019.yml"
+        # Any headers in any directory
+        - "**.h"
+        - "**.hpp"
+        - "**.hxx"
+        - "**.cuh"
+        # Any source file in any directory
+        - "**.c"
+        - "**.cpp"
+        - "**.cxx"
+        - "**.cuh"
+        # Any cmakelists in any directory
+        - "**CMakeLists.txt"
+        # Anything in a directory called `cmake`
+        - "**cmake/**"
   pull_request:
+    branches: [master]
+      paths:
+        # The workflow
+        - ".github/workflows/WindowsVisualStudio2019.yml"
+        # Any headers in any directory
+        - "**.h"
+        - "**.hpp"
+        - "**.hxx"
+        - "**.cuh"
+        # Any source file in any directory
+        - "**.c"
+        - "**.cpp"
+        - "**.cxx"
+        - "**.cuh"
+        # Any cmakelists in any directory
+        - "**CMakeLists.txt"
+        # Anything in a directory called `cmake`
+        - "**cmake/**"
 
 
 jobs:
