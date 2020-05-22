@@ -9,40 +9,40 @@ on:
     branches: [ master ]
     paths:
       # The workflow
-        - ".github/workflows/WindowsVisualStudio2019.yml"
-        # Any headers in any directory
-        - "**.h"
-        - "**.hpp"
-        - "**.hxx"
-        - "**.cuh"
-        # Any source file in any directory
-        - "**.c"
-        - "**.cpp"
-        - "**.cxx"
-        - "**.cuh"
-        # Any cmakelists in any directory
-        - "**CMakeLists.txt"
-        # Anything in a directory called `cmake`
-        - "**cmake/**"
+      - ".github/workflows/WindowsVisualStudio2019.yml"
+      # Any headers in any directory
+      - "**.h"
+      - "**.hpp"
+      - "**.hxx"
+      - "**.cuh"
+      # Any source file in any directory
+      - "**.c"
+      - "**.cpp"
+      - "**.cxx"
+      - "**.cuh"
+      # Any cmakelists in any directory
+      - "**CMakeLists.txt"
+      # Anything in a directory called `cmake`
+      - "**cmake/**"
   pull_request:
-    branches: [master]
-      paths:
-        # The workflow
-        - ".github/workflows/WindowsVisualStudio2019.yml"
-        # Any headers in any directory
-        - "**.h"
-        - "**.hpp"
-        - "**.hxx"
-        - "**.cuh"
-        # Any source file in any directory
-        - "**.c"
-        - "**.cpp"
-        - "**.cxx"
-        - "**.cuh"
-        # Any cmakelists in any directory
-        - "**CMakeLists.txt"
-        # Anything in a directory called `cmake`
-        - "**cmake/**"
+    branches: [ master ]
+    paths:
+      # The workflow
+      - ".github/workflows/WindowsVisualStudio2019.yml"
+      # Any headers in any directory
+      - "**.h"
+      - "**.hpp"
+      - "**.hxx"
+      - "**.cuh"
+      # Any source file in any directory
+      - "**.c"
+      - "**.cpp"
+      - "**.cxx"
+      - "**.cuh"
+      # Any cmakelists in any directory
+      - "**CMakeLists.txt"
+      # Anything in a directory called `cmake`
+      - "**cmake/**"
 
 
 jobs:
