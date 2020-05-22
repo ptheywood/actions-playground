@@ -4,7 +4,9 @@
 
 namespace hello {
 
+/**
+ * Print helloActions to stdout
+ */
 void helloActions();
-
 
 }  // namespace hello
