@@ -2,8 +2,8 @@
 name: WindowsVisualStudio2019
 
 on:
-  # push:
-    # branches: [ master ]
+  push:
+    branches: [ master ]
   #   paths:
   #     # All files by default
   #     - "**"
