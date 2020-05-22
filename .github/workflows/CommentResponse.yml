@@ -1,0 +1,17 @@
+# do something when a comment is created.
+
+name: CommentResponse
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: respond
+      run: echo ":partyparrot:"
