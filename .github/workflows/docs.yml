@@ -11,7 +11,8 @@ on:
       - "docs/**"
       # Or this workflow.
       - ".github/workflows/docs.yml"
-  pull_request: [ master ]
+  pull_request: 
+    branches: [ master ]
     paths:
       # Anything in the docs dir
       - "docs/**"
