@@ -7,11 +7,8 @@ on:
     types: [created]
 
 jobs:
-  build:
+  respond:
     runs-on: ubuntu-18.04
-
-    steps:
-    - uses: actions/checkout@v2
 
     - name: respond
       run: echo ":partyparrot:"
