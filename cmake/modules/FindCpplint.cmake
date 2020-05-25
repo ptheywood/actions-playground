@@ -1,5 +1,3 @@
-
-
 #[=======================================================================[.rst:
 FindCpplint
 -----------
@@ -90,5 +88,8 @@ find_package_handle_standard_args(
     VERSION_VAR 
         Cpplint_VERSION
 )
+
+mark_as_advanced(Cpplint_EXECUTABLE Cpplint_VERSION Cpplint_FOUND)
+
 
 # unset(Cpplint_version_result)
