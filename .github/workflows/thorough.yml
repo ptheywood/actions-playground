@@ -1,5 +1,5 @@
 # Thorough workflow triggered when a PR is approved.
-name: Ubuntu1604
+name: thorough
 
 # Build if a direct push to master, or a PR is approved.
 on:
