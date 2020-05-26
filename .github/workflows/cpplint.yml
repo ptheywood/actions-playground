@@ -51,7 +51,7 @@ jobs:
       run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
 
     - name: Configure
-      run: cmake .. -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
+      run: cmake . -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
       shell: bash
 
     - name: cpplint
