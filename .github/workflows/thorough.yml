@@ -1,10 +1,15 @@
 # Thorough workflow triggered when a PR is approved.
+# @todo - check team membership via web api?  https://developer.github.com/v3/teams/members/
+# github.event.pusher.name ?
 name: thorough
 
 # Build if a direct push to master, or a PR is approved.
 on:
   push:
-    branches: [ master ]
+    # branches: [ master ]
+    # temp run on any push which changes the file.
+    # paths: 
+    #   - ".github/workflows/thorough.yml"
   pull_request_review:
     types: [submitted, edited, dismissed]
 
@@ -26,5 +31,13 @@ jobs:
     - name: Echo state
       run: |
         echo "github.event"
-        echo "${{ github.event }}"
-        echo "${{ github.github.repository_owner }}"
+        echo "${{ github.event.action }}"
+        echo "${{ github.event.pull_request }}"
+        echo "${{ github.event.review }}"
+        echo "${{ github.event.changes }}"
+        echo "${{ github.event.organization }}"
+        echo "${{ github.event.installation }}"
+        echo "${{ github.event.sender }}"
+        echo "--"
+        echo "${{ github.actor }}"
+        echo "${{ github.repository_owner }}"
