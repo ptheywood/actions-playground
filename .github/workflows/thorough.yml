@@ -25,4 +25,6 @@ jobs:
    
     - name: Echo state
       run: |
-        echo "$GITHUB_CONTEXT"
+        echo "github.event"
+        echo "${{ github.event }}"
+        echo "${{ github.github.repository_owner }}"
