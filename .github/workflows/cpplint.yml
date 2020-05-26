@@ -1,0 +1,59 @@
+# Cpplint-only workflow (no need for compiler(s) to be installed)
+name: cpplint
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      # The workflow
+      - ".github/workflows/cpplint.yml"
+      # Any headers in any directory
+      - "**.h"
+      - "**.hpp"
+      - "**.hxx"
+      - "**.cuh"
+      # Any source file in any directory
+      - "**.c"
+      - "**.cpp"
+      - "**.cxx"
+      - "**.cuh"
+      # Any cmakelists in any directory
+      - "**CMakeLists.txt"
+      # Anything in a directory called `cmake`
+      - "**cmake/**"
+  pull_request: 
+    branches: [ master ]
+    paths:
+      # The workflow
+      - ".github/workflows/cpplint.yml"
+      # Any headers in any directory
+      - "**.h"
+      - "**.hpp"
+      - "**.hxx"
+      - "**.cuh"
+      # Any source file in any directory
+      - "**.c"
+      - "**.cpp"
+      - "**.cxx"
+      - "**.cuh"
+      # Any cmakelists in any directory
+      - "**CMakeLists.txt"
+      # Anything in a directory called `cmake`
+      - "**cmake/**"
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install cpplint
+      run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
+
+    - name: Configure
+      run: cmake .. -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
+      shell: bash
+
+    - name: cpplint
+      run: cmake --build . --target all_cpplint 
+      working-directory: build
