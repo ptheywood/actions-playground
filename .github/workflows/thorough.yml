@@ -1,0 +1,28 @@
+# Thorough workflow triggered when a PR is approved.
+name: Ubuntu1604
+
+# Build if a direct push to master, or a PR is approved.
+on:
+  push:
+    branches: [ master ]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+
+
+jobs:
+  trigger-check:
+    runs-on:  ubuntu-18.04
+
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Trigger_check
+      run: |
+        echo "This has been triggered?"
+        echo "github.actor = ${{ github.actor }}"	
+   
+    - name: Echo state
+      run: |
+        echo "$GITHUB_CONTEXT"
