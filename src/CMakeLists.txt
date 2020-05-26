@@ -52,6 +52,10 @@ if(USE_CXX)
     # Add the include directories to the library
     target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 
+    # Make it fpic
+    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+
 
     # Use clang tidy if possible. Requires compilers.
     if(USE_CLANG_TIDY)
