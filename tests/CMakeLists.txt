@@ -77,4 +77,18 @@ if(USE_CXX)
             )
         endif()
     endif()
+
+
+    # Use clang tidy if possible. Requires compilers.
+    if(USE_CLANG_TIDY)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/ClangTidy.cmake)
+        ClangTidy_register(
+            TARGET
+                ${PROJECT_NAME}
+            SRC_FILES
+                ${SRC}
+            EXCLUDE_REGEX
+                ".*/externals/.*;"
+        )
+    endif()
 endif()

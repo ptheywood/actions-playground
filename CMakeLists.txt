@@ -33,7 +33,7 @@ option(USE_CPPLINT "Enable the use of cpplint for linting" OFF)
 option(USE_CLANG_TIDY "Enable the use of clang-tidy for lintint" OFF)
 
 # Enable formatting via clang-format
-option(USE_CLANG_FORMAT "Enable the use of clang-format for autoformatting?" OFF)
+# option(USE_CLANG_FORMAT "Enable the use of clang-format for autoformatting?" OFF)
 
 # Optionally use gtest_discover for google test-ctest integration
 option(USE_GTEST_DISCOVER "Enable ctest googletest integration" OFF)
@@ -52,24 +52,24 @@ endif()
 # If CPPLint is enabled, find it and create the custom target.
 if(USE_CPPLINT)
     find_package(Cpplint REQUIRED)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cpplint.cmake)
-    # Register the all_cpplint target
-    Cpplint_register_global_target()
+    # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cpplint.cmake)
+    # # Register the all_cpplint target
+    # Cpplint_register_global_target()
 endif()
 
 # If Clangtidy is enabled, find it and create the custom target.
 if(USE_CLANG_TIDY)
     find_package(ClangTidy REQUIRED)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClangTidy.cmake)
-    ClangTidy_register_global_target()
+    # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClangTidy.cmake)
+    # ClangTidy_register_global_target()
 endif()
 
 # If ClangFormat is enabled, find it and create the custom target.
-if(USE_CLANG_FORMAT)
-    find_package(ClangFormat REQUIRED)
-    # add_custom_target(all_clang_format)
-    # set_target_properties(all_clang_format PROPERTIES EXCLUDE_FROM_ALL TRUE)
-endif()
+# if(USE_CLANG_FORMAT)
+#     find_package(ClangFormat REQUIRED)
+#     add_custom_target(all_clang_format)
+#     set_target_properties(all_clang_format PROPERTIES EXCLUDE_FROM_ALL TRUE)
+# endif()
 
 # Add the library 
 add_subdirectory(src)

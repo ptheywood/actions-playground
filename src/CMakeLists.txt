@@ -36,20 +36,6 @@ if(USE_CPPLINT)
     )
 endif()
 
-if(USE_CLANG_TIDY)
-    # Requires compile_command.json (make only?)
-    set(MAKE_EXPORT_COMPILE_COMMANDS ON)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/ClangTidy.cmake)
-    ClangTidy_register(
-        TARGET
-            ${PROJECT_NAME}
-        FILES
-            ${ALL_SRC}
-        EXCLUDE_REGEX
-            ".*/externals/.*;"
-        # TRIGGER_ON_ALL
-    )
-endif()
 
 # If using the languages required by this executable, enable and build - supports non-building executables.
 if(USE_CXX)
@@ -65,5 +51,20 @@ if(USE_CXX)
 
     # Add the include directories to the library
     target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
+
+
+    # Use clang tidy if possible. Requires compilers.
+    if(USE_CLANG_TIDY)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/ClangTidy.cmake)
+        ClangTidy_register(
+            TARGET
+                ${PROJECT_NAME}
+            SRC_FILES
+                ${SRC}
+            EXCLUDE_REGEX
+                ".*/externals/.*;"
+        )
+    endif()
+
 endif()
 

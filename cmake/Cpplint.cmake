@@ -72,9 +72,10 @@ function(Cpplint_register)
         endif()
 
         # If the all_cpplint target exists, add to it.
-        if(TARGET ${ALL_CPPLINT_TARGET})
-            add_dependencies(${ALL_CPPLINT_TARGET} ${NEW_CPPLINT_TARGET})
+        if(NOT TARGET ${ALL_CPPLINT_TARGET})
+            Cpplint_register_global_target()
         endif()
+        add_dependencies(${ALL_CPPLINT_TARGET} ${NEW_CPPLINT_TARGET})
     endif()
 
 endfunction()
