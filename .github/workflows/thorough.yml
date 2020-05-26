@@ -5,7 +5,7 @@ name: thorough
 
 # Build if a direct push to master, or a PR is approved.
 on:
-  push:
+  # push:
     # branches: [ master ]
     # temp run on any push which changes the file.
     # paths: 
