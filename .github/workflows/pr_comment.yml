@@ -11,29 +11,23 @@ on:
   
   # Run a job on PR open or issue comment.
 jobs:
-  run_on_comment_or_open:
-    if: github.event_name == 'issue_comment' || github.event_name == 'pull_request'
+  run_on_pr_comment:
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
     runs-on: ubuntu-18.04
     env:
       trigger: "!FullCI"
-    
-
     steps:
     - uses: actions/checkout@v2
 
 
     - name: run-on-pr-comment
-      # if: github.event_name == 'issue_comment' && github.event.issue.pull_request
-      run: echo "run-on-ic"
+      if: github.event_name == 'issue_comment' && ( github.event.action == 'created' || github.event.action == 'edited' ) && github.event.issue.pull_request
+      run: |
+        echo "run-on-pr-comment"
+        echo "Body: ${{ github.event.comment.body }}"
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
-
-    - name: run-on-pr_open
-      if: github.event_name == 'pull_request' && github.event.action == 'created'
-      run: echo "run-on-ic"
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-
+    
     - name: get_comment_body
       run: echo "${{ github.event.comment.body }}"
 
@@ -47,5 +41,28 @@ jobs:
 
     - name: author_has_priviledge
       # if: github.event.comment.
-      run: "comment author @todo has some kind of access to invoke the trigger?"
+      run: echo "comment author @todo has some kind of access to invoke the trigger?"
+
+
+  run_on_pr:
+    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'edited')
+    runs-on: ubuntu-18.04
+    env:
+      trigger: "!FullCI"
+    steps:
+    - uses: actions/checkout@v2
+    - name: run-on-pr_open
+      if: github.event_name == 'pull_request' && github.event.action == 'opened'
+      run: echo "run-on-ic"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: run-on-pr_edit
+      if: github.event_name == 'pull_request' && github.event.action == 'edited'
+      run: echo "run-on-ic"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+
+    
  
