@@ -5,11 +5,12 @@ name: pr_comment
 # On PR which is opened, or commented on, look for a trigger to invoke this CI, otherwise skip.
 on:
   pull_request:
-    types: [opened]
+    types: [opened, edited]
   issue_comment:
-    types: [created]
+    types: [created, edited]
   
   # Run a job on PR open or issue comment.
+jobs:
   run_on_comment_or_open:
     if: github.event_name == 'issue_comment' || github.event_name == 'pull_request'
     runs-on: ubuntu-1804
