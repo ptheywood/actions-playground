@@ -17,6 +17,7 @@ on:
   pull_request_review:
     types: [submitted, edited, dismissed]
 
+
 # @todo - edge case - PRs from external repos, where lablled/approved by team, but then 
 jobs:
   run_on_pr:
@@ -54,7 +55,31 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
 
+    - name: prr-action
+      run: | 
+        echo "github.event.action = ${{ github.event.action }}"
+        echo "github.event.review.state = ${{ github.event.review.state }}"
+
+    - name: prr_if_has_label_FullCI
+      if: contains(github.event.pull_request.labels.*.name, 'FullCI')
+      run: echo "review for PR ${{ github.event.pull_request.number }} which has FullCI label"
+
+    
+
     # "state": "APPROVED"
     # - name: pr_if_has_label_FullCI
     #   if: contains(github.event.pull_request.labels.*.name, 'FullCI')
     #   run: echo "PR ${{ github.event.pull_request.number }} Has FullCI label"
+
+  # Job which runs on a PR with the appropraite issue defined, 
+  # run_with_label_or_approved:
+  #   if: (github.event_name == 'pull_request_' || github.event_name == 'pull_request_review') && (contains(github.event.pull_request.labels.*.name, 'FullCI'))
+  #   runs-on: ubuntu-18.04
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: run-on-pr-or-prr-if-labelled-or-approved
+  #     run: echo "run-on-pr-or-prr if labelled or apprioved"
+  #     env:
+  #       GITHUB_CONTEXT: ${{ toJson(github) }}
+
+
