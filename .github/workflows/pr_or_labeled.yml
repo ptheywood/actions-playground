@@ -17,36 +17,42 @@ on:
   pull_request_review:
     types: [submitted, edited, dismissed]
 
-
+# @todo - edge case - PRs from external repos, where lablled/approved by team, but then 
 jobs:
   run_on_pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
     - name: run-on-pr
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo ${{github.event.review.state }}
+      run: echo "${{ toJson(github.event) }}"
+      # env:
+      #   GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: pr_new_label
+      if: github.event.action == 'labeled'
+      run: echo " New label ${{ github.event.label.name }}"
+
+    - name: pr_if_has_label_FullCI
+      if: contains(github.event.pull_request.labels.*.name, 'FullCI')
+      run: echo "PR ${{ github.event.pull_request.number }} Has FullCI label"
+    
+    # @todo pr_if_approved
+
+    - name: pr_is_open
+      if: github.event.pull_request.state == 'open'
+      run: echo "PR ${{ github.event.pull_request.number }} is open"
 
 
-  run_if_labeled:
-    if: contains(github.event.issue.labels.*.name, 'FullCI')
-    runs-on:  ubuntu-18.04
+  run_on_review:
+    if: github.event_name == 'pull_request_review'
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: run-on-prr
+      run: echo ${{ toJson(github.event) }}
 
-    - name: Trigger_check
-      run: |
-        echo "This has been triggered?"
-        echo "github.actor = ${{ github.actor }}"	
-
-  run_if_approved:
-    if: github.event.review.state == 'approved' 
-    runs-on:  ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Trigger_check
-      run: |
-        echo "This has been triggered?"
-        echo "github.event.review.state = ${{ github.event.review.state }}"	
-  
+    # "state": "APPROVED"
+    # - name: pr_if_has_label_FullCI
+    #   if: contains(github.event.pull_request.labels.*.name, 'FullCI')
+    #   run: echo "PR ${{ github.event.pull_request.number }} Has FullCI label"
