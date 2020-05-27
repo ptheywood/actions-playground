@@ -45,7 +45,7 @@ jobs:
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
-          "body": "**Pending** Github Action :rocket: [${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+          "body": "**Pending** GitHub Action :rocket: \n[${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
         }' | jq --raw-output -e '.id') && echo "::set-output name=bot_comment_id::$bot_comment_id" && \
         curl --request POST \
         --url ${{ github.event.comment.url }}/reactions \
@@ -80,12 +80,12 @@ jobs:
           "description": "Success",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
         }' | jq --raw-output -e '.id' && \
-        curl --request POST \
-        --url ${{ github.event.issue.comments_url }} \
+        curl --request PATCH \
+        --url ${{ github.event.repository.url }}/issues/comments/${{ steps.register_pending.outputs.bot_comment_id }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
-          "body": "**Successful** Github Action :+1: [${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+          "body": "**Successful** GitHub Action :+1: \n[${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
         }' | jq --raw-output -e '.id'
         
     # @todo - switch to checks api once out of beta-this has the skipped option.
@@ -102,10 +102,10 @@ jobs:
           "description": "failure",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
         }' | jq --raw-output -e '.id' && \
-        curl --request POST \
-        --url ${{ github.event.issue.comments_url }} \
+        curl --request PATCH \
+        --url ${{ github.event.repository.url }}/issues/comments/${{ steps.register_pending.outputs.bot_comment_id }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
-          "body": "**Failed** Github Action :-1: [${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+          "body": "**Failed** GitHub Action :-1: \n[${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
         }' | jq --raw-output -e '.id'
