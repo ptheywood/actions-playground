@@ -26,9 +26,9 @@ jobs:
 
     - name: if_env_test_ON
       run: echo "if_env_test_ON executed"
-      if: ${{ env.build_tests }} == "ON"
+      if: env.build_tests == 'ON'
 
     - name: if_env_test_OFF
       run: echo "if_env_test_OFF executed"
-      if: ${{ env.build_tests }}  == "OFF" 
+      if: env.build_tests  == 'OFF' 
 
