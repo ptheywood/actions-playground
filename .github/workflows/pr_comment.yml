@@ -47,7 +47,15 @@ jobs:
 
     - name: author_has_priviledge
       # if: github.event.comment.
-      run: echo "comment author @todo has some kind of access to invoke the trigger?"
+      run: |
+        echo "comment author ${{ github.event.comment.user.login }}"
+        echo "issue author ${{ github.issue.user.login }}, assoc ${{ github.issue.author_association }}"
+        echo "sender ${{ github.sender.login }}"
+        echo "pr status ${{ github.issue.state }}"
+        echo "repository ${{ github.repository }}"
+        echo "repository_owner ${{ github.repository_owner }}"
+        echo "actor ${{ github.actor }}"
+        echo "comment author @todo has some kind of access to invoke the trigger?"
 
 
   run_on_pr:
