@@ -39,11 +39,11 @@ jobs:
     
     - name: starts_with_trigger
       if: startsWith(github.event.comment.body, env.trigger)
-      run: "comment body startsWith ${{ env.trigger }}"
+      run: echo "comment body startsWith ${{ env.trigger }}"
 
     - name: contains_trigger
       if: contains(github.event.comment.body, env.trigger)
-      run: "comment body contains ${{ env.trigger }}"
+      run: echo "comment body contains ${{ env.trigger }}"
 
     - name: author_has_priviledge
       # if: github.event.comment.
