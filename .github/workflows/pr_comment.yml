@@ -48,7 +48,7 @@ jobs:
 
     # author_association - COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MEMBER, NONE, OWNER
     - name: comment_author_approved
-      if: contains(["OWNER", "MEMBER", "COLLABORATOR"], github.event.comment.author_association)
+      if: contains("OWNER,MEMBER,COLLABORATOR"], github.event.comment.author_association)
       run: echo "Author ${{github.event.comment.user.login}} with association ${{github.event.comment.author_association}} passed." 
 
 
