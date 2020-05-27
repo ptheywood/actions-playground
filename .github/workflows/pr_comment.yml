@@ -16,8 +16,32 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    outputs:
 
-    # @todo - register as pending
+    # Get the sha of the head from the api for this pull request.
+    - name: get_pr_sha
+      id: get_pr_sha
+      run: |
+        pr_head_sha=$(curl --request GET \
+        --url ${{ github.event.issue.pull_request.url }} \
+        | jq --raw-output '.head.sha')
+        echo "::set-output name=pr_head_sha::$pr_head_sha"
+
+    # @todo - switch to checks api once out of beta-this has the skipped option.
+    - name: Register Pending
+      # @todo check curl response to set error/success correctly.
+      run: |
+        curl --request POST \
+        --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "state": "pending",
+          "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
+          "description": "Pending",
+          "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }'
+
 
     - name: run-on-pr-comment
       run: | 
@@ -31,7 +55,7 @@ jobs:
       # @todo check curl response to set error/success correctly.
       run: |
         curl --request POST \
-        --url ${{ github.event.repository.url }}/statuses/${{ github.sha }} \
+        --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
@@ -39,6 +63,6 @@ jobs:
           "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
           "description": "Successful in @todo s",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
-          }'
+        }'
         
       if: success()
