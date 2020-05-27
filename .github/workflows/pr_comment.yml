@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    outputs:
 
     # Get the sha of the head from the api for this pull request.
     - name: get_pr_sha
