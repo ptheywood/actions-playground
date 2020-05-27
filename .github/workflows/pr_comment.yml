@@ -39,7 +39,16 @@ jobs:
           "description": "Pending",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
         }' \
-        | jq --raw-output -e '.id'
+        | jq --raw-output -e '.id' &&
+        curl --request POST \
+        --url ${{ github.event.comment.url }}/reactions \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'Accept: application/vnd.github.squirrel-girl-preview' \
+        --header 'content-type: application/json' \
+        --data '{
+          "content": "rocket",
+        }'
+
 
 
     - name: run-on-pr-comment
@@ -63,6 +72,13 @@ jobs:
           "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
           "description": "Success",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.issues.comments_url }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": "Action ["${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }} success!](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}) :+1:",
         }' | jq --raw-output -e '.id'
         
     # @todo - switch to checks api once out of beta-this has the skipped option.
@@ -78,4 +94,11 @@ jobs:
           "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
           "description": "failure",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.issues.comments_url }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": "Action ["${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }} failed](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}) :-1:",
         }' | jq --raw-output -e '.id'
