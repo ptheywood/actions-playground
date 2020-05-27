@@ -1,9 +1,9 @@
 # Run on PR comments, has to be in master for issue_comment to trigger.
 name: pr_comment
 
+# @todo - package this up into a local action? so that it is  much cleaner in the workflow. Not sure if the IF can be packaged up.  
 
 # Trigger this workflow when a pr is commented on with a valid keyword, from a legit user, otherwise, don't. 
-# @todo - figure out how to register this as a status with the pr / reply to the pr with the status.
 on:
   issue_comment:
     types: [created, edited]
@@ -15,7 +15,6 @@ jobs:
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association) && startsWith(github.event.comment.body, '!actions-full-ci')
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v2
 
     # Get the sha of the head from the api for this pull request.
     - name: get_pr_sha
@@ -49,6 +48,12 @@ jobs:
           "content": "rocket"
         }'
 
+    # @todo - make this do the merged ref rather aswell / in place of the HEAD ref?
+    # If the pull_request.url returns mergable, merge_commit_sha will contain the relevant ref. 
+    # Possibly dupe this to a second job within here? Or have job1 which fetches info, makes the comment, job 2/3 which do the ci, and job 4 which updates comments?
+    - uses: actions/checkout@v2
+      with: 
+        ref: ${{ steps.get_pr_sha.outputs.pr_head_sha }}
 
     - name: run-on-pr-comment
       run: | 
