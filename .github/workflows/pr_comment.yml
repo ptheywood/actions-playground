@@ -46,7 +46,7 @@ jobs:
         --header 'Accept: application/vnd.github.squirrel-girl-preview' \
         --header 'content-type: application/json' \
         --data '{
-          "content": "rocket",
+          "content": "rocket"
         }'
 
 
@@ -74,7 +74,7 @@ jobs:
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
         }' | jq --raw-output -e '.id' && \
         curl --request POST \
-        --url ${{ github.event.issues.comments_url }} \
+        --url ${{ github.event.issue.comments_url }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
@@ -96,7 +96,7 @@ jobs:
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
         }' | jq --raw-output -e '.id' && \
         curl --request POST \
-        --url ${{ github.event.issues.comments_url }} \
+        --url ${{ github.event.issue.comments_url }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
