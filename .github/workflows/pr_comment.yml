@@ -45,13 +45,20 @@ jobs:
       if: contains(github.event.comment.body, env.trigger)
       run: echo "comment body contains ${{ env.trigger }}"
 
-    - name: author_has_priviledge
+
+    # author_association - COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MEMBER, NONE, OWNER
+    - name: comment_author_approved
+      if: contains(["OWNER", "MEMBER", "COLLABORATOR"], github.event.comment.author_association)
+      run: echo "Author ${{github.event.comment.user.login}} with association ${{github.event.comment.author_association}} passed." 
+
+
+    - name: author_dump
       # if: github.event.comment.
       run: |
-        echo "comment author ${{ github.event.comment.user.login }}"
-        echo "issue author ${{ github.issue.user.login }}, assoc ${{ github.issue.author_association }}"
-        echo "sender ${{ github.sender.login }}"
-        echo "pr status ${{ github.issue.state }}"
+        echo "comment author ${{ github.event.comment.user.login }} assoc ${{ github.event.comment.author_association }}"
+        echo "issue author ${{ github.event.issue.user.login }}, assoc ${{ github.event.issue.author_association }}"
+        echo "sender ${{ github.event.sender.login }}"
+        echo "pr status ${{ github.event.issue.state }}"
         echo "repository ${{ github.repository }}"
         echo "repository_owner ${{ github.repository_owner }}"
         echo "actor ${{ github.actor }}"
