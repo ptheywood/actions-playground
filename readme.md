@@ -7,3 +7,12 @@
 This repo is just a simple project to mess around with github actions, that is lighter-weight to execute than in [[ptheywood/cuda-cmake-github-actions]] where CUDA is installed during the process... 
 
 Includes a helloWorld CMake application, as cmake is likely going to be my main point of contact with github actions.
+
+
+### pr_comment 
+
+Runs when the keyword !FullCI is mentioned in a comment on a PR. 
+
+Uses the github  api to register a status for the relevant commit.
+
+@todo - switch to checks once out of beta? - this allows skipped etc.
