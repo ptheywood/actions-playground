@@ -31,7 +31,7 @@ jobs:
     - name: get_comment_body
       run: |
         echo "${{ github.event.comment.body }}"
-        echo "trigger: ${{ env.trigge r}}"
+        echo "trigger: ${{ env.trigger }}"
         echo "contains:"
         echo "${{ contains(github.event.comment.body, env.trigger)"
         echo "startswith:"
