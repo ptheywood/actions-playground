@@ -1,0 +1,50 @@
+# Run on PR comments, has to be in master for issue_comment to trigger.
+name: pr_comment
+
+
+# On PR which is opened, or commented on, look for a trigger to invoke this CI, otherwise skip.
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  
+  # Run a job on PR open or issue comment.
+  run_on_comment_or_open:
+    if: github.event_name == 'issue_comment' || github.event_name == 'pull_request'
+    runs-on: ubuntu-1804
+    env:
+      trigger: "@FullCI"
+    
+
+    steps:
+    - uses: actions/checkout@v2
+
+
+    - name: run-on-pr-comment
+      # if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+      run: echo "run-on-ic"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: run-on-pr_open
+      if: github.event_name == 'pull_request' && github.event.action == 'created'
+      run: echo "run-on-ic"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: get_comment_body
+      run: echo "${{ github.event.comment.body }}"
+
+    - name: starts_with_trigger
+      if: startsWith(github.event.comment.body, env.trigger)
+      run: "comment body startsWith ${{ env.trigger }}"
+
+    - name: contains_trigger
+      if: contains(github.event.comment.body, env.trigger)
+      run: "comment body contains ${{ env.trigger }}"
+
+    - name: author_has_priviledge
+      if: github.event.comment.
+      run: "comment author ${{}} has some kind of access to invoke the trigger?"
+ 
