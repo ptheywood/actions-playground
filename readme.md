@@ -15,4 +15,4 @@ Runs when the keyword !FullCI is mentioned in a comment on a PR.
 
 Uses the github  api to register a status for the relevant commit.
 
-@todo - switch to checks once out of beta? - this allows skipped etc.
+@todo - switch to [Checks](https://developer.github.com/v3/checks/) once out of beta? - this allows `conclusion`s of `neutral`, `skipped` rather than just `success` or `failure`.
