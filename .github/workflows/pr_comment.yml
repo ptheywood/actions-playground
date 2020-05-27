@@ -14,7 +14,7 @@ on:
     if: github.event_name == 'issue_comment' || github.event_name == 'pull_request'
     runs-on: ubuntu-1804
     env:
-      trigger: "@FullCI"
+      trigger: "!FullCI"
     
 
     steps:
