@@ -8,8 +8,7 @@ on:
   issue_comment:
     types: [created, edited]
 
- 
-  # Run a job on PR open or issue comment.
+# Run a job on PR open or issue comment.
 jobs:
   run_on_pr_comment:
     # Run on issue comments, to issues which are actually a pull request, from legit authors, who mention the magical trigger.
@@ -20,45 +19,8 @@ jobs:
 
     - name: run-on-pr-comment
       run: | 
-        echo "Successfully triggered by ${{ github.event.comment.user.login }} ( ${{ github.event.comment.author_association }}"
-        echo "  commenting on PR ${{ github.event.issue.pull_request }})"
+        echo "Successfully triggered by ${{ github.event.comment.user.login }} ( ${{ github.event.comment.author_association }})"
+        echo "  commenting on PR ${{ github.event.issue.number }}"
         echo "  which contains trigger phrase '!FullCI'"
         echo "  comment:"
         echo "${{ github.event.comment.body }}" 
-
-    
-    # - name: get_comment_body
-    #   run: |
-    #     echo "${{ github.event.comment.body }}"
-    #     echo "trigger: ${{ env.trigger }}"
-    #     echo "contains:"
-    #     echo "${{ contains(github.event.comment.body, env.trigger) }}"
-    #     echo "startswith:"
-    #     echo "${{ startsWith(github.event.comment.body, env.trigger) }}"
-    
-    # - name: starts_with_trigger
-    #   if: startsWith(github.event.comment.body, env.trigger)
-    #   run: echo "comment body startsWith ${{ env.trigger }}"
-
-    # - name: contains_trigger
-    #   if: contains(github.event.comment.body, env.trigger)
-    #   run: echo "comment body contains ${{ env.trigger }}"
-
-
-    # # author_association - COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MEMBER, NONE, OWNER
-    # - name: comment_author_approved
-    #   if: contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association)
-    #   run: echo "Author ${{github.event.comment.user.login}} with association ${{github.event.comment.author_association}} passed." 
-
-
-    # - name: author_dump
-    #   # if: github.event.comment.
-    #   run: |
-    #     echo "comment author ${{ github.event.comment.user.login }} assoc ${{ github.event.comment.author_association }}"
-    #     echo "issue author ${{ github.event.issue.user.login }}, assoc ${{ github.event.issue.author_association }}"
-    #     echo "sender ${{ github.event.sender.login }}"
-    #     echo "pr status ${{ github.event.issue.state }}"
-    #     echo "repository ${{ github.repository }}"
-    #     echo "repository_owner ${{ github.repository_owner }}"
-    #     echo "actor ${{ github.actor }}"
-    #     echo "comment author @todo has some kind of access to invoke the trigger?"
