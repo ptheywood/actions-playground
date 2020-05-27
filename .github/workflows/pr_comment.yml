@@ -23,7 +23,7 @@ jobs:
       run: |
         pr_head_sha=$(curl --request GET \
         --url ${{ github.event.issue.pull_request.url }} \
-        | jq --raw-output '.head.sha')
+        | jq --raw-output -e '.head.sha')
         echo "::set-output name=pr_head_sha::$pr_head_sha"
 
     # @todo - switch to checks api once out of beta-this has the skipped option.
@@ -39,7 +39,8 @@ jobs:
           "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
           "description": "Pending",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
-        }'
+        }' \
+        | jq --raw-output -e '.id'
 
 
     - name: run-on-pr-comment
@@ -62,6 +63,6 @@ jobs:
           "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
           "description": "Successful in @todo s",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
-        }'
+        }' | jq --raw-output -e '.id'
         
       if: success()
