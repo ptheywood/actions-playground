@@ -60,6 +60,7 @@ jobs:
         echo "${{ github.event.comment.body }}" 
   
     # @todo - switch to checks api once out of beta-this has the skipped option.
+    # @todo - make the comment reference the relevant issue to ttrack which is which (in case of out of order?) 
     - name: Report Success
       if: success()
       run: |
@@ -79,10 +80,9 @@ jobs:
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
-          "body": ":+1:"
+          "body": ":+1: Action [${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }} success!](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})",
         }' | jq --raw-output -e '.id'
         
-    # "body": "Action ["${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }} success!](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}) :+1:",
     # @todo - switch to checks api once out of beta-this has the skipped option.
     - name: Report Failure
       if: failure()
@@ -102,5 +102,5 @@ jobs:
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --data '{
-          "body": ":-1:"
+          "body": ":-1: Action [${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }} Failure](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
         }' | jq --raw-output -e '.id'
