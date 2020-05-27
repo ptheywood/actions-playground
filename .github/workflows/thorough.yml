@@ -17,6 +17,7 @@ on:
 
 jobs:
   trigger-check:
+    if: github.event.review.state == 'approved'
     runs-on:  ubuntu-18.04
 
 
