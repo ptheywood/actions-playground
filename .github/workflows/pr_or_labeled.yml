@@ -25,9 +25,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: run-on-pr
-      run: echo "${{ toJson(github.event) }}"
-      # env:
-      #   GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "run-on-pr"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
 
     - name: pr_new_label
       if: github.event.action == 'labeled'
@@ -50,7 +50,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: run-on-prr
-      run: echo ${{ toJson(github.event) }}
+      run: echo "run-on-prr"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
 
     # "state": "APPROVED"
     # - name: pr_if_has_label_FullCI
