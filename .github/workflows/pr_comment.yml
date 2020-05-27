@@ -46,6 +46,6 @@ jobs:
       run: "comment body contains ${{ env.trigger }}"
 
     - name: author_has_priviledge
-      if: github.event.comment.
-      run: "comment author ${{}} has some kind of access to invoke the trigger?"
+      # if: github.event.comment.
+      run: "comment author @todo has some kind of access to invoke the trigger?"
  
