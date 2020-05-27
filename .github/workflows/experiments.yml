@@ -1,0 +1,34 @@
+# Generic actions experiment workflow.
+name: experiments
+
+on:
+  push:
+    paths:
+      # The workflow file
+      - ".github/workflows/experiments.yml"
+
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    env:
+      build_tests: "ON"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install cpplint
+      run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
+
+
+    - name: Output env
+      run: echo "${{ env.build_tests }}"
+
+    - name: if_env_test_ON
+      run: echo "if_env_test_ON executed"
+      if: ${{ env.build_tests }} == "ON"
+
+    - name: if_env_test_OFF
+      run: echo "if_env_test_OFF executed"
+      if: ${{ env.build_tests }}  == "OFF" 
+
