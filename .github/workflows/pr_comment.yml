@@ -29,8 +29,14 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
     
     - name: get_comment_body
-      run: echo "${{ github.event.comment.body }}"
-
+      run: |
+        echo "${{ github.event.comment.body }}"
+        echo "trigger: ${{ env.trigge r}}"
+        echo "contains:"
+        echo "${{ contains(github.event.comment.body, env.trigger)"
+        echo "startswith:"
+        echo "${{ startsWith(github.event.comment.body, env.trigger)"
+    
     - name: starts_with_trigger
       if: startsWith(github.event.comment.body, env.trigger)
       run: "comment body startsWith ${{ env.trigger }}"
