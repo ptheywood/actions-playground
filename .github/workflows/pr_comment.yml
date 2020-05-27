@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # @todo - register as pending
+
     - name: run-on-pr-comment
       run: | 
         echo "Successfully triggered by ${{ github.event.comment.user.login }} ( ${{ github.event.comment.author_association }})"
@@ -24,13 +26,12 @@ jobs:
         echo "  which contains trigger phrase '!FullCI'"
         echo "  comment:"
         echo "${{ github.event.comment.body }}" 
-    
+  
     - name: Report status
       run: |
         curl --request POST \
-        --url ${{ github.repository.statuses_url }} \
+        --url ${{ github.event.repository.url }}/statuses/${{ github.sha }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-        --header 'content-type: application/json' \
         --header 'content-type: application/json' \
         --data '{
           "state": "success",
