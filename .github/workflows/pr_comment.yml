@@ -28,6 +28,7 @@ jobs:
         echo "${{ github.event.comment.body }}" 
   
     - name: Report status
+      # @todo check curl response to set error/success correctly.
       run: |
         curl --request POST \
         --url ${{ github.event.repository.url }}/statuses/${{ github.sha }} \
@@ -35,8 +36,9 @@ jobs:
         --header 'content-type: application/json' \
         --data '{
           "state": "success",
-          "target_url": "${{ github.repository_url }}/actions/runs/${{ github.run_id }}",
-          "description": "Successful in Xs",
+          "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
+          "description": "Successful in @todo s",
           "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
           }'
+        
       if: success()
