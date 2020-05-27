@@ -2,88 +2,65 @@
 name: pr_comment
 
 
-# On PR which is opened, or commented on, look for a trigger to invoke this CI, otherwise skip.
+# Trigger this workflow when a pr is commented on with a valid keyword, from a legit user, otherwise, don't. 
+# @todo - figure out how to register this as a status with the pr / reply to the pr with the status.
 on:
-  pull_request:
-    types: [opened, edited]
   issue_comment:
     types: [created, edited]
+
+env: 
+  trigger: "!FullCI"
   
   # Run a job on PR open or issue comment.
 jobs:
   run_on_pr_comment:
-    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+    # Run on issue comments, to issues which are actually a pull request, from legit authors, who mention the magical trigger.
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association) && contains(github.event.comment.body, env.trigger)
     runs-on: ubuntu-18.04
-    env:
-      trigger: "!FullCI"
     steps:
     - uses: actions/checkout@v2
-
 
     - name: run-on-pr-comment
-      if: github.event_name == 'issue_comment' && ( github.event.action == 'created' || github.event.action == 'edited' ) && github.event.issue.pull_request
-      run: |
-        echo "run-on-pr-comment"
-        echo "Body: ${{ github.event.comment.body }}"
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-    
-    - name: get_comment_body
-      run: |
-        echo "${{ github.event.comment.body }}"
-        echo "trigger: ${{ env.trigger }}"
-        echo "contains:"
-        echo "${{ contains(github.event.comment.body, env.trigger) }}"
-        echo "startswith:"
-        echo "${{ startsWith(github.event.comment.body, env.trigger) }}"
-    
-    - name: starts_with_trigger
-      if: startsWith(github.event.comment.body, env.trigger)
-      run: echo "comment body startsWith ${{ env.trigger }}"
-
-    - name: contains_trigger
-      if: contains(github.event.comment.body, env.trigger)
-      run: echo "comment body contains ${{ env.trigger }}"
-
-
-    # author_association - COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MEMBER, NONE, OWNER
-    - name: comment_author_approved
-      if: contains('MEMBER,COLLABORATOR', github.event.comment.author_association)
-      run: echo "Author ${{github.event.comment.user.login}} with association ${{github.event.comment.author_association}} passed." 
-
-
-    - name: author_dump
-      # if: github.event.comment.
-      run: |
-        echo "comment author ${{ github.event.comment.user.login }} assoc ${{ github.event.comment.author_association }}"
-        echo "issue author ${{ github.event.issue.user.login }}, assoc ${{ github.event.issue.author_association }}"
-        echo "sender ${{ github.event.sender.login }}"
-        echo "pr status ${{ github.event.issue.state }}"
-        echo "repository ${{ github.repository }}"
-        echo "repository_owner ${{ github.repository_owner }}"
-        echo "actor ${{ github.actor }}"
-        echo "comment author @todo has some kind of access to invoke the trigger?"
-
-
-  run_on_pr:
-    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'edited')
-    runs-on: ubuntu-18.04
-    env:
-      trigger: "!FullCI"
-    steps:
-    - uses: actions/checkout@v2
-    - name: run-on-pr_open
-      if: github.event_name == 'pull_request' && github.event.action == 'opened'
-      run: echo "run-on-ic"
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-
-    - name: run-on-pr_edit
-      if: github.event_name == 'pull_request' && github.event.action == 'edited'
-      run: echo "run-on-ic"
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-
+      run: | 
+        echo "Successfully triggered by ${{ github.event.comment.user.login }} ( ${{ github.event.comment.author_association }}"
+        echo "  commenting on PR ${{ github.event.issue.pull_request }})"
+        echo "  which contains trigger phrase ${{ env.trigger }}"
+        echo "  comment:"
+        echo "${{ github.event.comment.body }}" 
 
     
- 
+    # - name: get_comment_body
+    #   run: |
+    #     echo "${{ github.event.comment.body }}"
+    #     echo "trigger: ${{ env.trigger }}"
+    #     echo "contains:"
+    #     echo "${{ contains(github.event.comment.body, env.trigger) }}"
+    #     echo "startswith:"
+    #     echo "${{ startsWith(github.event.comment.body, env.trigger) }}"
+    
+    # - name: starts_with_trigger
+    #   if: startsWith(github.event.comment.body, env.trigger)
+    #   run: echo "comment body startsWith ${{ env.trigger }}"
+
+    # - name: contains_trigger
+    #   if: contains(github.event.comment.body, env.trigger)
+    #   run: echo "comment body contains ${{ env.trigger }}"
+
+
+    # # author_association - COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MEMBER, NONE, OWNER
+    # - name: comment_author_approved
+    #   if: contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association)
+    #   run: echo "Author ${{github.event.comment.user.login}} with association ${{github.event.comment.author_association}} passed." 
+
+
+    # - name: author_dump
+    #   # if: github.event.comment.
+    #   run: |
+    #     echo "comment author ${{ github.event.comment.user.login }} assoc ${{ github.event.comment.author_association }}"
+    #     echo "issue author ${{ github.event.issue.user.login }}, assoc ${{ github.event.issue.author_association }}"
+    #     echo "sender ${{ github.event.sender.login }}"
+    #     echo "pr status ${{ github.event.issue.state }}"
+    #     echo "repository ${{ github.repository }}"
+    #     echo "repository_owner ${{ github.repository_owner }}"
+    #     echo "actor ${{ github.actor }}"
+    #     echo "comment author @todo has some kind of access to invoke the trigger?"
