@@ -1,0 +1,11 @@
+{
+    Checks: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cert-*,google-*,modernize-*,performance-*,readability-*',
+    CheckOptions: [
+
+    ],
+    WarningsAsErrors: '',
+    HeaderFilterRegex: '.*',
+    FormatStyle:     '{BasedOnStyle: llvm, IndentWidth: 4}'
+
+}
+

@@ -1,8 +1,8 @@
 #include <cstdlib>
-#include "hello.hpp"
+#include "hello/Hello.hpp"
 
 // Entry point
 int main(int, char *[]) {
-    hello::helloActions();
+    hello::Hello::helloActions();
     return EXIT_SUCCESS;
 }

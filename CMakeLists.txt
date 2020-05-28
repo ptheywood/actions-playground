@@ -1,63 +1,106 @@
 cmake_minimum_required(VERSION VERSION 3.10 FATAL_ERROR)
 
-project(helloActions CXX)
+# add custom modules path.
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/modules/ ${CMAKE_MODULE_PATH})
+
+# The root project doesn't take any languages until after options have been processed.
+project(helloActions LANGUAGES NONE)
 
 
-# Options
+# Define global options with defualt values.
+
+# Enable compilation of code - to enable lint-only builds.
+option(USE_CXX "Enable the use of a CXX compiler" ON)
+
+
+# Enable building the subproject 
+option(BUILD_HELLO_EXECUTABLE "Enable building the HelloExecutable subproject" ON)
+
+# Enable Test builds
 option(BUILD_TESTS "Enable building tests" OFF)
 
-# Settings.
-set(default_build_type "Release")
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-    "Debug" "Release")
+# Enable building of wordy docs?
+option(BUILD_USER_DOCUMENTATION "Enable building user documentation" OFF)
+
+# Enable docs builds
+option(BUILD_API_DOCUMENTATION "Enable building API documentation" OFF)
+
+
+# Enable linting via cpplint
+option(USE_CPPLINT "Enable the use of cpplint for linting" OFF)
+
+# Enable linting via clang-tidy
+option(USE_CLANG_TIDY "Enable the use of clang-tidy for lintint" OFF)
+
+# Enable formatting via clang-format
+# option(USE_CLANG_FORMAT "Enable the use of clang-format for autoformatting?" OFF)
+
+# Optionally use gtest_discover for google test-ctest integration
+option(USE_GTEST_DISCOVER "Enable ctest googletest integration" OFF)
+
+# Check which languages are avaialble, and enable them if so?
+include(CheckLanguage)
+
+
+# @todo - only do this some of the time? / process args propper.y
+if(USE_CXX)
+    enable_language(CXX)
 endif()
 
-if(CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_CONFIGURATION_TYPES Debug Release)
-  set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
-    "Reset the configurations to what we need"
-    FORCE)
+
+# Process options, starting with finding things required before add_subdirectory
+# If CPPLint is enabled, find it and create the custom target.
+if(USE_CPPLINT)
+    find_package(Cpplint REQUIRED)
+    # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cpplint.cmake)
+    # # Register the all_cpplint target
+    # Cpplint_register_global_target()
 endif()
 
-# Specify using C++11 standard
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_CXX_STANDARD_REQUIRED true)
+# If Clangtidy is enabled, find it and create the custom target.
+if(USE_CLANG_TIDY)
+    find_package(ClangTidy REQUIRED)
+    # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClangTidy.cmake)
+    # ClangTidy_register_global_target()
+endif()
+
+# If ClangFormat is enabled, find it and create the custom target.
+# if(USE_CLANG_FORMAT)
+#     find_package(ClangFormat REQUIRED)
+#     add_custom_target(all_clang_format)
+#     set_target_properties(all_clang_format PROPERTIES EXCLUDE_FROM_ALL TRUE)
+# endif()
+
+# Add the library 
+add_subdirectory(src)
+
+# Add the executble subproject if required
+if(BUILD_HELLO_EXECUTABLE)
+    add_subdirectory(helloExecutable)
+endif()
+
+# If building the user guide, add the docs subdirectory
+if(BUILD_USER_DOCUMENTATION)
+    find_package(Pandoc REQUIRED)
+    add_subdirectory(docs)
+endif()
+
+# If building the api docs enable the doxygen common code.
+if (BUILD_API_DOCUMENTATION)
+    # Trigger doxygen?
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/doxygen.cmake)
 endif()
 
 
 
-# files
-set(SRC_INCLUDE
-    include/hello.hpp
-)
 
-set(SRC
-    src/hello.cpp
-    src/main.cpp
-)
-
-set(ALL_SRC
-    ${SRC_INCLUDE}
-    ${SRC}
-)
-
-
-# Executable
-add_executable(${PROJECT_NAME} ${ALL_SRC})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-# tests
+# If tests were requested, enable ctest and add the tests project?
 if(BUILD_TESTS)
-    enable_testing()
-    # prtend main is a test.
-    add_test(
-        NAME ${PROJECT_NAME} 
-        COMMAND "${PROJECT_NAME}"
-        WORKING_DIRECTORY ${PROJECT_DIR}
-    )
+    # enable_testing() - This is only enabled if a test is to be added later.
+    # If gtest discover is on, make sure it's available?
+    if(USE_GTEST_DISCOVER)
+
+    endif()
+
+    add_subdirectory(tests)
 endif()
