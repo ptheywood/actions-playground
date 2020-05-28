@@ -3,9 +3,6 @@
 # BUT it's not a viable method for authorizing full CI, as it can be triggered by updates to the PR by a non-authorized author (i.e once the label is added it will fire for all updates to that PR). 
 # Could make it only on application of the label, but then it's once and done.
 
-# @todo - make this happen to push's  (sync doesn't seem to cover it)
-# @todo - might need to also fire for push's if the branch is in a PR (need to dump the push context.)
-
 # Possible edge case with PRs from externals?
 
 # label is `trigger-labelledPR`
@@ -19,25 +16,12 @@ on:
 
 jobs:
   labelled-linting:
-    # Only run if a PR and it has the label.
-    if: github.event_name == 'pull_request'
+    # Only run if a PR and it has the label, otherwise skip.
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR')
     runs-on: ubuntu-18.04
     steps:
     # Checkout the merged commit?
     - uses: actions/checkout@v2
-
-    - name: dump github context
-      run: echo "run-on-prr"
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-
-
-    - name: "contains?"
-      run: |
-        echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
-        echo "'trigger-labelledPR'" 
-        echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
-
     
     # Do the workflow - in this case just cpplint.
     - name: Install cpplint
