@@ -1,0 +1,37 @@
+# This action fires when a PR is created, updated or a review is applied.
+# This works as running actions only when the label is present on the PR
+# BUT it's not a viable method for authorizing full CI, as it can be triggered by updates to the PR by a non-authorized author (i.e once the label is added it will fire for all updates to that PR). 
+# Could make it only on application of the label, but then it's once and done.
+
+# Possible edge case with PRs from externals?
+
+# label is `trigger-labelledPR`
+name: labelledPR
+
+# Run this action if a label when a label is applied.
+on:
+  # Run if PR opened, syynchronized (push to branch) or labeled with a new label
+  pull_request:
+    types: [opened, synchronize, labeled]
+
+jobs:
+  labelled-linting:
+    # Only run if a PR and it has the label.
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR')
+    runs-on: ubuntu-18.04
+    steps:
+    # Checkout the merged commit?
+    - uses: actions/checkout@v2
+    
+    # Do the workflow - in this case just cpplint.
+    - name: Install cpplint
+      run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
+
+    - name: Configure
+      run: cmake . -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
+      shell: bash
+
+    - name: cpplint
+      run: cmake --build . --target all_cpplint 
+      working-directory: build
+

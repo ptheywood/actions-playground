@@ -1,5 +1,5 @@
 # Run on PR comments, has to be in master for issue_comment to trigger.
-name: pr_comment
+name: PRComment
 
 # @todo - package this up into a local action? so that it is  much cleaner in the workflow. Not sure if the IF can be packaged up.  
 
