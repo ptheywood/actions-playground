@@ -30,7 +30,10 @@ jobs:
 
 
     - name: "contains?"
-      run: echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
+      run: |
+        echo "${{ toJson(github.event.pull_request.labels.*.name)" 'trigger-labelledPR') }}"
+        echo "'trigger-labelledPR'" 
+        echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
 
     
     # Do the workflow - in this case just cpplint.
