@@ -34,7 +34,7 @@ jobs:
 
     - name: "contains?"
       run: |
-        echo "${{ toJson(github.event.pull_request.labels.*.name) 'trigger-labelledPR') }}"
+        echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
         echo "'trigger-labelledPR'" 
         echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
 
