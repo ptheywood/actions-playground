@@ -3,6 +3,9 @@
 # BUT it's not a viable method for authorizing full CI, as it can be triggered by updates to the PR by a non-authorized author (i.e once the label is added it will fire for all updates to that PR). 
 # Could make it only on application of the label, but then it's once and done.
 
+# @todo - make this happen to push's  (sync doesn't seem to cover it)
+# @todo - might need to also fire for push's if the branch is in a PR (need to dump the push context.)
+
 # Possible edge case with PRs from externals?
 
 # label is `trigger-labelledPR`
@@ -31,7 +34,7 @@ jobs:
 
     - name: "contains?"
       run: |
-        echo "${{ toJson(github.event.pull_request.labels.*.name)" 'trigger-labelledPR') }}"
+        echo "${{ toJson(github.event.pull_request.labels.*.name) 'trigger-labelledPR') }}"
         echo "'trigger-labelledPR'" 
         echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
 
