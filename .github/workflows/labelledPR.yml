@@ -17,11 +17,21 @@ on:
 jobs:
   labelled-linting:
     # Only run if a PR and it has the label.
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR')
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-18.04
     steps:
     # Checkout the merged commit?
     - uses: actions/checkout@v2
+
+    - name: dump github context
+      run: echo "run-on-prr"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+
+    - name: "contains?"
+      run: echo "${{ contains(github.event.pull_request.labels.*.name, 'trigger-labelledPR') }}" 
+
     
     # Do the workflow - in this case just cpplint.
     - name: Install cpplint
