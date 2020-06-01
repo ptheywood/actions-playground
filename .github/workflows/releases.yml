@@ -1,0 +1,37 @@
+# Workflow for releases
+name: releases
+
+# Handle release events - this workflow needs to be present in the tag beign applied?
+
+
+on:
+  release:
+    types: 
+      - published
+      - unpublished
+      - created
+      - edited
+      - deleted
+      - prereleased
+      - released
+
+
+jobs:
+  do_release:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Configure
+        run: cmake . -B build
+        shell: bash
+
+      # - name: build
+      #   run: cmake --build . --target all 
+      #   working-directory: build

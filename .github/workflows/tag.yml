@@ -1,0 +1,32 @@
+# Workflow for tags and releases
+name: tag
+
+# Tagged commits by an approved author should trigger thorough builds - 
+# Possibly only tags which represent a version number?
+# This could then potentially be checked on release creation.
+
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' 
+
+jobs:
+  do_tag:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Configure
+        run: cmake . -B build
+        shell: bash
+
+      # - name: build
+      #   run: cmake --build . --target all 
+      #   working-directory: build
