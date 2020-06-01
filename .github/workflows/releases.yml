@@ -5,19 +5,18 @@ name: releases
 
 
 # github release UI options
-# - Creting a new release from an existing tag:
-#    - Triggers published + (pre)released + (maybe/sometimes) created
+# - Creating a new release from an existing tag:
+#    - Triggers published + (pre)released + (if not created as draft) created
 # - creating a new release without a tag
-#    - Triggers published + push.tag + (pre)released.
-#    - Did not get a creaed event, as it was originally created as a draft.
+#    - Triggers published + push.tag + (pre)released. + (if not created as draft) created
 
 
 
 # Release types / actions:
   # - published - when a draft release is published.
-  # - unpublished - Not sure how to trigger this from the github UI
-  # - created - This appears to be triggered sometimes from the ui but not always - release, created and published from same commit at the same time?
-  # - edited - When release body/name is edited? 
+  # - unpublished - When a published release is turned back into a draft(api only?) - this then will not fire as not triggered by draft workflows.
+  # - created - Draft events do not trigger, so only occurs if straight to published.
+  # - edited - When the release is modified - only appears to be text changes not the tag!
   # - deleted - delete button.
   # - prereleased - when publshed && is marked as a pre-release
   # - released - when published && is not marked as a pre-release
