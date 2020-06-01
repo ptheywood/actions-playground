@@ -17,6 +17,8 @@ on:
 jobs:
   do_tag:
     runs-on: ubuntu-18.04
+    env:
+      create_release: true
 
     steps:
       - uses: actions/checkout@v2
@@ -30,6 +32,39 @@ jobs:
         run: cmake . -B build
         shell: bash
 
-      # - name: build
-      #   run: cmake --build . --target all 
-      #   working-directory: build
+      - name: build
+        run: cmake --build . --target all 
+        working-directory: build
+
+      - name: create artifact
+        run: zip -r build.zip build
+
+      # create a release 
+      - name: create release
+        if: success() && env.create_release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: "Release ${{ github.ref }}\n: Changelog @todo"
+          draft: false
+          prerelease: false
+
+      # Upload the artifact to the created release
+      - name: upload
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build.zip
+          asset_name: build.zip
+          asset_content_type: application/zip
+
+
+  
+
