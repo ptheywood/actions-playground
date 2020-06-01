@@ -4,10 +4,19 @@ name: releases
 # Handle release events - this workflow needs to be present in the tag beign applied?
 
 
+# github release UI options
+# - Creting a new release from an existing tag:
+#    - Triggers published + (pre)released + (maybe/sometimes) created
+# - creating a new release without a tag
+#    - Triggers published + push.tag + (pre)released.
+#    - Did not get a creaed event, as it was originally created as a draft.
+
+
+
 # Release types / actions:
   # - published - when a draft release is published.
   # - unpublished - Not sure how to trigger this from the github UI
-  # - created - Not sure how to trigger this from teh github UI.
+  # - created - This appears to be triggered sometimes from the ui but not always - release, created and published from same commit at the same time?
   # - edited - When release body/name is edited? 
   # - deleted - delete button.
   # - prereleased - when publshed && is marked as a pre-release
