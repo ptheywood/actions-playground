@@ -1,0 +1,83 @@
+# Workflow for releases
+name: releases
+
+# Handle release events - this workflow needs to be present in the tag beign applied?
+
+
+# github release UI options
+# - Creating a new release from an existing tag:
+#    - Triggers published + (pre)released + (if not created as draft) created
+# - creating a new release without a tag
+#    - Triggers published + push.tag + (pre)released. + (if not created as draft) created
+
+# Release types / actions:
+  # - published - when a draft release is published.
+  # - unpublished - When a published release is turned back into a draft(api only?) - this then will not fire as not triggered by draft workflows.
+  # - created - Draft events do not trigger, so only occurs if straight to published.
+  # - edited - When the release is modified - only appears to be text changes not the tag!
+  # - deleted - delete button.
+  # - prereleased - when publshed && is marked as a pre-release
+  # - released - when published && is not marked as a pre-release
+
+# Force pushing a tag to a different commit does not re-trigger the release! - should have a on.push.tag which checks if there is an assocated release and if so does any extra objects?
+
+on:
+  release:
+    types: 
+      - published
+      # - unpublished
+      # - created
+      # - edited
+      # - deleted
+      # - prereleased
+      # - released
+
+
+jobs:
+  do_release:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Configure
+        run: cmake . -B build
+        shell: bash
+
+      - name: build
+        run: cmake --build . --target all 
+        working-directory: build
+
+      - name: create artifact
+        run: zip -r build.zip build
+
+      - name: upload
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./build.zip
+          asset_name: build.zip
+          asset_content_type: application/zip
+
+
+      # If the release CI works, mark it as a
+      - name: Mark as release
+        if: success() && github.event.release.prerelease
+        run: |
+          echo "Mark this as a not pre-release automatically?"
+          echo "url: ${{ github.event.release.url }}"
+          curl --request POST \
+          --url ${{ github.event.release.url }} \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "prerelease": true,
+          }' | jq --raw-output -e '.id'

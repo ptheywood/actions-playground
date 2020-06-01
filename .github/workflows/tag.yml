@@ -1,0 +1,35 @@
+# Workflow for tags and releases
+name: tag
+
+# Tagged commits by an approved author should trigger thorough builds - 
+# Possibly only tags which represent a version number?
+# This could then potentially be checked on release creation.
+
+
+# force pushes to tags do not - re-trigger any release event, but they do re-trigger the push.tag
+# If the release is created from an un-tagged commit, there is no guarantee that this (the push.tag action) has completed or been issued prior to the release action. Probably best to activate on both (although then may double-trigger?)
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' 
+
+jobs:
+  do_tag:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Configure
+        run: cmake . -B build
+        shell: bash
+
+      # - name: build
+      #   run: cmake --build . --target all 
+      #   working-directory: build
