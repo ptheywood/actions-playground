@@ -74,7 +74,7 @@ jobs:
         run: |
           echo "Mark this as a not pre-release automatically?"
           echo "url: ${{ github.event.release.url }}"
-          curl --request POST \
+          curl --request PATCH \
           --url ${{ github.event.release.url }} \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
