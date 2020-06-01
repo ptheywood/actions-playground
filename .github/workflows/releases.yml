@@ -6,13 +6,14 @@ name: releases
 
 # Release types / actions:
   # - published - when a draft release is published.
-  # - unpublished
-  # - created
+  # - unpublished - Not sure how to trigger this from the github UI
+  # - created - Not sure how to trigger this from teh github UI.
   # - edited - When release body/name is edited? 
-  # - deleted
+  # - deleted - delete button.
   # - prereleased - when publshed && is marked as a pre-release
   # - released - when published && is not marked as a pre-release
 
+# Force pushing a tag to a different commit does not re-trigger the release! - should have a on.push.tag which checks if tehre is an assocated release and if so does any extra objects?
 
 on:
   release:

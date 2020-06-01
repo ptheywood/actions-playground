@@ -6,6 +6,8 @@ name: tag
 # This could then potentially be checked on release creation.
 
 
+# force pushes to tags do not - re-trigger any release event, but they do re-trigger the push.tag
+
 on:
   push:
     tags:
