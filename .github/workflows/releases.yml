@@ -4,6 +4,16 @@ name: releases
 # Handle release events - this workflow needs to be present in the tag beign applied?
 
 
+# Release types / actions:
+  # - published - when a draft release is published.
+  # - unpublished
+  # - created
+  # - edited - When release body/name is edited? 
+  # - deleted
+  # - prereleased - when publshed && is marked as a pre-release
+  # - released - when published && is not marked as a pre-release
+
+
 on:
   release:
     types: 
