@@ -1,0 +1,30 @@
+# Testing with build matrices 
+name: MatrixTesting
+
+# Pushes only, no need for pr 
+on:
+  push:
+
+jobs:
+
+  # Experiment with build matrices, to mirror combinations of OS, CUDA version and extra image specific variables
+  # I.e. newer ubuntu only works with newer CUDAs. 
+  # Can i specify multiple CUDAs for an OS in an include?
+
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-16.04, ubuntu-18.04 ]
+        cuda: [9.0, 10.0]
+    # env:
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
