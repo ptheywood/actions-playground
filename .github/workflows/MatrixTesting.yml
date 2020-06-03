@@ -19,12 +19,11 @@ jobs:
       matrix:
         os: [ ubuntu-16.04, ubuntu-18.04 ]
         cuda: [9.0, 10.0]
-    # env:
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Dump matrix context
+      - name: Dump matrix context
         env:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         run: echo "$MATRIX_CONTEXT"
