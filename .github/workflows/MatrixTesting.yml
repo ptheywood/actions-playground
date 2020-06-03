@@ -4,6 +4,8 @@ name: MatrixTesting
 # Pushes only, no need for pr 
 on:
   push:
+    paths:
+    - ".github/workflows/MatrixTesting.yml"
 
 jobs:
   # Ubuntu job, with an explicit include-based build matrix of good combos. 
