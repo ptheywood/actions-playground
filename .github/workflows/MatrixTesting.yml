@@ -17,8 +17,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-16.04, ubuntu-18.04 ]
-        cuda: [9.0, 10.0]
 
         include:
           # Add an extra variable if the os is 1804?
@@ -27,10 +25,9 @@ jobs:
           # Add an extra cuda version for 16.04
           - os: ubuntu-16.04
             cuda: 8.0
-          
           # Add multiple cuda version at once?
           - os: ubuntu-16.04
-            cuda: [ 11.0, 11.1 ] 
+            cuda: 11.0
 
     steps:
       - uses: actions/checkout@v2
