@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace hello {
-    const std::string helloMessage = "helloActions";
+    const std::string helloMessage = "helloActions2";
 
 unsigned int Hello::helloLength() {
     return hello::helloMessage.length();
