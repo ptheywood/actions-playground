@@ -1,0 +1,72 @@
+# Testing with build matrices 
+name: MatrixTesting
+
+# Pushes only, no need for pr 
+on:
+  push:
+    paths:
+    - ".github/workflows/MatrixTesting.yml"
+
+jobs:
+  # Ubuntu job, with an explicit include-based build matrix of good combos. 
+  # 1804 - 10.1, 10.2
+  # 1604 - 8.0, 9.0, 10.0
+  ubuntu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Explicitly list os/cuda combinations, rather than having defaults with a lot of exclude rules (easy to forget)
+        include:
+          # 1804, CUDA 10.1 and 10.2
+          - os: ubuntu-18.04
+            cuda: "10.1"
+          - os: ubuntu-18.04
+            cuda: "10.2"
+
+          # 16.04, CUDA 8.0, 9.0, 10.0
+          - os: ubuntu-16.04
+            cuda: "8.0"
+          - os: ubuntu-16.04
+            cuda: "9.0"
+          - os: ubuntu-16.04
+            cuda: "10.0"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+
+  # Windows job with explicit include based build matrix.
+  # Windows2019 (VS2019): CUDA 10.2
+  # Windows2017 (VS2017): CUDA 10.1?
+  windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows 2019 & VS 2019 - CUDA 10.2
+          - os: windows-2019
+            cuda: "10.2.89"
+            visual_studio: "Visual Studio 16 2019"
+
+          # Windows2016 & VS 2017 - CUDA 10.0, 10.1
+          - os: windows-2016
+            cuda: "10.0.130"
+            visual_studio: "Visual Studio 15 2017"
+          - os: windows-2016
+            cuda: "10.1.243"
+            visual_studio: "Visual Studio 15 2017"
+
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
