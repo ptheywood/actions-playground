@@ -14,8 +14,8 @@ std::string Hello::getHello()  {
 }
 
 void Hello::helloActions() {
+    unsigned long unused;
     std::cout << getHello() << std::endl;
 }
 
 }  // namespace hello
-

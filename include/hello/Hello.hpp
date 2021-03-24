@@ -9,7 +9,7 @@ namespace hello {
 class Hello {
  public:
 /**
- * Return the length of the hello message - a testable function.
+  *Return the length of the hello message - a testable function.
  * @return length of the message to be output.
  */
 static unsigned int helloLength();
