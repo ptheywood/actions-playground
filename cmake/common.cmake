@@ -19,3 +19,11 @@ if(NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED true)
 endif()
+
+
+# Have some more warnings if gcc.
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  add_compile_options(-Wall -Wextra)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  add_compile_options(/W4)
+endif()

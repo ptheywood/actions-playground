@@ -41,19 +41,30 @@ on:
       # Anything in a directory called `cmake`
       - "**cmake/**"
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Install cpplint
-      run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
+      run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Configure
       run: cmake . -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
       shell: bash
 
     - name: cpplint
-      run: cmake --build . --target all_cpplint 
+      id: lint
       working-directory: build
+      run: |
+        set -o pipefail
+        cmake --build . --target all_cpplint |& tee cpplint.log
+
+    - name: generate annotations
+      if: ${{ failure() && steps.lint.outcome == 'failure' }}
+      working-directory: build
+      run: python3 ../scripts/actions-cpplint-annotations.py
+
+       
+
