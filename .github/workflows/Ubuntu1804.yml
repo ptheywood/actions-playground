@@ -41,10 +41,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install cpplint
-      run: |
-        pip3 install cpplint
-        echo "::add-path::$HOME/.local/bin"
+    # - name: Install cpplint
+    #   run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Configure
       id: configure
@@ -71,8 +69,16 @@ jobs:
       if: ${{ failure() && steps.configure.outcome == 'failure' }}
 
     - name: Build
-      run: cmake --build . --target all --verbose -j 2
+      id: build
       working-directory: build
+      run: |
+        set -o pipefail
+        cmake --build . --target all --verbose -j 2 |& tee CMakeBuild.log
+
+    - name: generate annotations
+      if: ${{ failure() && steps.build.outcome == 'failure' }}
+      working-directory: build
+      run: python3 ../scripts/actions-gcc-annotations.py
     
     - name: Test
       run: ctest  -VV -j2
