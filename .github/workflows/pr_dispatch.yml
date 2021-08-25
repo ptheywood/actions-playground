@@ -13,16 +13,6 @@ on:
       - ".github/workflows/pr_dispatch.yml"
   # Run on workflow dispatch, taking a PR id? 
   workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
-        default: 'The Octoverse'    
-
 
 jobs:
   build:
@@ -38,10 +28,10 @@ jobs:
       run: |
         echo "head.sha: ${{ github.event.pull_request.head.sha }}"
 
-    - name: echo inputs
-      run: |
-          echo "Hello ${{ github.event.inputs.name }}!"
-          echo "- in ${{ github.event.inputs.home }}!"
+    # - name: echo inputs
+    #   run: |
+    #       echo "Hello ${{ github.event.inputs.name }}!"
+    #       echo "- in ${{ github.event.inputs.home }}!"
 
     - name: echo context
       run: |
