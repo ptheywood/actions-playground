@@ -1,0 +1,49 @@
+name: pr_dispatch
+
+# Only build if relevant files changes?
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      # Add everything
+      - "**"
+      # Exclude some things
+      - "!.github/workflows"
+      - ".github/workflows/pr_dispatch.yml"
+  # Run on workflow dispatch, taking a PR id? 
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'    
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    # @todo - make this use the merge ref if it's a PR? with: ref:
+    - uses: actions/checkout@v2
+      # with:
+      #   ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: echo event head sha
+      run: |
+        echo "head.sha: ${{ github.event.pull_request.head.sha }}"
+
+    - name: echo inputs
+      run: |
+          echo "Hello ${{ github.event.inputs.name }}!"
+          echo "- in ${{ github.event.inputs.home }}!"
+
+    - name: echo context
+      run: |
+        echo "${{ toJSON(github.event) }}"
+    
