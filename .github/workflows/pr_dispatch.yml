@@ -46,4 +46,8 @@ jobs:
     - name: echo context
       run: |
         echo "${{ toJSON(github.event) }}"
+
+    - name: echo from pr
+      run: |
+        echo "This step is in the pr not master"
     
