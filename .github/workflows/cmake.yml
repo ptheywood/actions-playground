@@ -34,14 +34,10 @@ jobs:
       if: ${{ env.CMAKE != 'default' }}
       working-directory: ${{ runner.temp }}
       run: |
-        wget https://github.com/Kitware/CMake/releases/download/v${{ env.CMAKE }}/cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
+        wget -q https://github.com/Kitware/CMake/releases/download/v${{ env.CMAKE }}/cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
         tar -zxvf cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
-        cd cmake-${{ env.CMAKE }}-Linux-x86_64
-        export PATH="$(pwd)/bin:${PATH}"
-        cmake --version
-        echo "$(pwd)/bin" >> $GITHUB_PATH
-
-
+        # Inner directory case changes in some releases, use find to get the right path
+        echo "$(dirname $(find $(pwd) -wholename "*/bin/cmake" -exec echo {} \; -quit))" >> $GITHUB_PATH
 
     - name: test
       run: |
