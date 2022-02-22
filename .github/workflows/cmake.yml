@@ -1,7 +1,7 @@
 # Workflow that builds the docs on linux (assume cross plat is fine)
 # This should only be trigered by any commits that modify the docs directory.
 
-name: docs
+name: cmake
 
 on:
   push:
