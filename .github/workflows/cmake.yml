@@ -28,7 +28,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install cmake
-      if: ${{ env.CMAKE != 'default') }}
+      if: ${{ env.CMAKE != 'default' }}
       working-directory: ${{ runner.temp }}
       run: |
         wget https://github.com/Kitware/CMake/releases/download/v${{ env.CMAKE }}/cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
