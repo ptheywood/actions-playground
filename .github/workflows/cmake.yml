@@ -1,0 +1,46 @@
+# Workflow that builds the docs on linux (assume cross plat is fine)
+# This should only be trigered by any commits that modify the docs directory.
+
+name: docs
+
+on:
+  push:
+    paths:
+      # this workflow.
+      - ".github/workflows/cmake.yml"
+
+
+jobs:
+  configure:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cmake:
+          - "default"
+          - "3.18.0"
+
+    # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
+    env:
+      CMAKE: ${{ matrix.cmake }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install cmake
+      if: ${{ env.CMAKE != 'default') }}
+      working-directory: ${{ runner.temp }}
+      run: |
+        wget https://github.com/Kitware/CMake/releases/download/v${{ env.CMAKE }}/cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
+        tar -zxvf cmake-${{ env.CMAKE }}-linux-x86_64.tar.gz
+        cd cmake-${{ env.CMAKE }}-linux-x86_64
+        export PATH="$(pwd)/bin:${PATH}"
+        cmake --version
+        echo "$(pwd)/bin" >> $GITHUB_PATH
+
+
+
+    - name: test
+      run: |
+        which cmake
+        cmake --version
