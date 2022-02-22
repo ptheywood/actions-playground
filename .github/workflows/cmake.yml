@@ -5,9 +5,9 @@ name: docs
 
 on:
   push:
-    paths:
+    # paths:
       # this workflow.
-      - ".github/workflows/cmake.yml"
+      # - ".github/workflows/cmake.yml"
 
 
 jobs:
@@ -19,6 +19,7 @@ jobs:
         cmake:
           - "default"
           - "3.18.0"
+          
 
     # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
     env:
