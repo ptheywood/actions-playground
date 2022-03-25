@@ -16,6 +16,8 @@ on:
       - "!scripts/**"
       # Re-include special cases
       - ".github/workflows/Ubuntu1804.yml"
+      - ".github/problem-matchers/"
+
   # Trigger on all PRs?
   pull_request:
     paths:
