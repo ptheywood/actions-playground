@@ -29,6 +29,7 @@ on:
       - "!scripts/**"
       # Re-include special cases
       - ".github/workflows/Ubuntu1804.yml"
+      - ".github/problem-matchers/"
 
 
 jobs:
@@ -40,6 +41,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    # Apply the matcher, this might not work without the matcher living on its own.
+    - name: apply matcher
+      run: echo "::add-matcher::.github/problem-matchers/matcher.json"   
+
 
     # - name: Install cpplint
     #   run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
