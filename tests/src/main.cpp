@@ -5,11 +5,12 @@
 
 bool test_helloLength() {
     unsigned int helloLength = hello::Hello::helloLength();
-    return helloLength == 11;
+    return helloLength == 11
 }
 
 // Entry point
 int main(int, char *[]) {
+    unsigned long unused;
     unsigned int pass_count = 0;
     unsigned int fail_count = 0;
 
