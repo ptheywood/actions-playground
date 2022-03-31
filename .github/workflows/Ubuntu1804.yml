@@ -46,7 +46,16 @@ jobs:
 
     # Apply the matcher, this might not work without the matcher living on its own.
     - name: apply matcher
-      run: echo "::add-matcher::.github/problem-matchers/matcher.json"   
+      run: echo "::add-matcher::.github/problem-matchers/matcher.json"
+    
+    
+    - name: apply json matcher
+      run: echo "::add-matcher::jsonval-matcher.json"
+
+    - name: dumb test
+      run: |
+        echo "WARN: myconfig.json:1:9: Missing attribute 'age'"
+        echo "ERROR: myconfig.json:1:4: Unexpected token '}'"
 
 
     # - name: Install cpplint
