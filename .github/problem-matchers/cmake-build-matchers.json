@@ -17,8 +17,7 @@
             "owner": "actions-playground-cmake-msvc",
             "pattern": [
                 {
-                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(?:fatal\\s+)?(warning|error):\\s+(.*)$",
-                    "regexp": "^(.*)\\((\\d+),(\\d+)\\):\\s+(warning|error)\\s+([0-9a-zA-Z]*): (.+) ([.+]?)$",
+                    "regexp": "(.*)\\((\\d+),(\\d+)\\):\\s+(warning|error)\\s+([0-9a-zA-Z]*):\\s+(.+)\\s+\\[(.+)\\]$",
                     "file": 1,
                     "line": 2,
                     "column": 3,
