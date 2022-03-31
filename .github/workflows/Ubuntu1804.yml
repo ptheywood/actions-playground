@@ -1,5 +1,5 @@
 # Ubuntu 18.04
-name: Ubuntu1604
+name: Ubuntu1804
 
 # Only build if relevant files changes?
 on:

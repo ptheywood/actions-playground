@@ -3,6 +3,7 @@
 
 // Entry point
 int main(int, char *[]) {
+    std::array<float, 4> notIncluded {};
     // Call the method
     hello::Hello::helloActions();
     // Return a value
