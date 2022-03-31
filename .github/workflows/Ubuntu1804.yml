@@ -83,10 +83,10 @@ jobs:
         set -o pipefail
         cmake --build . --target all --verbose -j 2 |& tee CMakeBuild.log
 
-    - name: generate annotations
-      if: ${{ failure() && steps.build.outcome == 'failure' }}
-      working-directory: build
-      run: python3 ../scripts/actions-gcc-annotations.py
+    # - name: generate annotations
+    #   if: ${{ failure() && steps.build.outcome == 'failure' }}
+    #   working-directory: build
+    #   run: python3 ../scripts/actions-gcc-annotations.py
     
     - name: Test
       run: ctest  -VV -j2
