@@ -44,23 +44,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Apply the matcher, this might not work without the matcher living on its own.
-    # - name: apply matcher
-    #   run: echo "::add-matcher::.github/problem-matchers/matcher.json"
+    - name: apply matcher
+      run: echo "::add-matcher::.github/problem-matchers/cmake-build-matchers.json"
     
-    
-    - name: apply json matcher
-      run: echo "::add-matcher::.github/problem-matchers/jsonval-matcher.json"
-
-    - name: dumb test
-      run: |
-        echo "WARN: myconfig.json:1:4: Unexpected token '}'"
-
-    - name: dumb test
-      run: |
-        echo "ERROR: myconfig.json:1:4: Unexpected token '}'"
-
-
     # - name: Install cpplint
     #   run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
@@ -95,11 +81,6 @@ jobs:
         set -o pipefail
         cmake --build . --target all --verbose -j 2 |& tee CMakeBuild.log
 
-    # - name: generate annotations
-    #   if: ${{ failure() && steps.build.outcome == 'failure' }}
-    #   working-directory: build
-    #   run: python3 ../scripts/actions-gcc-annotations.py
-    
     - name: Test
       run: ctest  -VV -j2
       shell: bash
