@@ -50,7 +50,7 @@ jobs:
     
     
     - name: apply json matcher
-      run: echo "::add-matcher::jsonval-matcher.json"
+      run: echo "::add-matcher::.github/problem-matchers/jsonval-matcher.json"
 
     - name: dumb test
       run: |
