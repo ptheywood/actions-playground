@@ -1,5 +1,5 @@
 # Ubuntu 18.04
-name: Ubuntu1604
+name: Ubuntu1804
 
 # Only build if relevant files changes?
 on:
@@ -16,6 +16,8 @@ on:
       - "!scripts/**"
       # Re-include special cases
       - ".github/workflows/Ubuntu1804.yml"
+      - ".github/problem-matchers/"
+
   # Trigger on all PRs?
   pull_request:
     paths:
@@ -29,6 +31,7 @@ on:
       - "!scripts/**"
       # Re-include special cases
       - ".github/workflows/Ubuntu1804.yml"
+      - ".github/problem-matchers/"
 
 
 jobs:
@@ -41,10 +44,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install cpplint
-      run: |
-        pip3 install cpplint
-        echo "::add-path::$HOME/.local/bin"
+    - name: apply matcher
+      run: echo "::add-matcher::.github/problem-matchers/cmake-build-matchers.json"
+    
+    # - name: Install cpplint
+    #   run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Configure
       id: configure
@@ -71,9 +75,12 @@ jobs:
       if: ${{ failure() && steps.configure.outcome == 'failure' }}
 
     - name: Build
-      run: cmake --build . --target all --verbose -j 2
+      id: build
       working-directory: build
-    
+      run: |
+        set -o pipefail
+        cmake --build . --target all --verbose -j 2 |& tee CMakeBuild.log
+
     - name: Test
       run: ctest  -VV -j2
       shell: bash

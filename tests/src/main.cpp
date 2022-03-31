@@ -1,15 +1,17 @@
+#include "hello/Hello.hpp"
 #include <cstdlib>
 #include <iostream>
 
-#include "hello/Hello.hpp"
 
 bool test_helloLength() {
+    auto x = boost::not_included();
     unsigned int helloLength = hello::Hello::helloLength();
     return helloLength == 11;
 }
 
 // Entry point
 int main(int, char *[]) {
+    unsigned long unused = 2;
     unsigned int pass_count = 0;
     unsigned int fail_count = 0;
 

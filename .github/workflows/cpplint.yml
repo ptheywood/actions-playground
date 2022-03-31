@@ -7,6 +7,8 @@ on:
     paths:
       # The workflow
       - ".github/workflows/cpplint.yml"
+      # The matcher
+      - ".github/problem-matchers/cpplint-matcher.yml"
       # Any headers in any directory
       - "**.h"
       - "**.hpp"
@@ -26,6 +28,8 @@ on:
     paths:
       # The workflow
       - ".github/workflows/cpplint.yml"
+      # The matcher
+      - ".github/problem-matchers/cpplint-matcher.yml"
       # Any headers in any directory
       - "**.h"
       - "**.hpp"
@@ -41,19 +45,33 @@ on:
       # Anything in a directory called `cmake`
       - "**cmake/**"
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Install cpplint
-      run: pip3 install cpplint && echo "::add-path::$HOME/.local/bin"
+      run: pip3 install cpplint && echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Enable custom cpplint problem matcher
+      run: echo "::add-matcher::.github/problem-matchers/cpplint-matcher.json"
 
     - name: Configure
       run: cmake . -B build -DUSE_CPPLINT=ON -DUSE_CXX=OFF -DBUILD_TESTS=ON
       shell: bash
 
     - name: cpplint
-      run: cmake --build . --target all_cpplint 
+      id: lint
       working-directory: build
+      run: |
+        set -o pipefail
+        cmake --build . --target all_cpplint |& tee cpplint.log
+
+    # - name: generate annotations
+    #   if: ${{ failure() && steps.lint.outcome == 'failure' }}
+    #   working-directory: build
+    #   run: python3 ../scripts/actions-cpplint-annotations.py
+
+       
+
