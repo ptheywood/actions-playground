@@ -1,7 +1,7 @@
+#include "hello/Hello.hpp"
 #include <cstdlib>
 #include <iostream>
 
-#include "hello/Hello.hpp"
 
 bool test_helloLength() {
     auto x = boost::not_included();
