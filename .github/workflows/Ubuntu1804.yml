@@ -45,12 +45,12 @@ jobs:
     - uses: actions/checkout@v2
 
     # Apply the matcher, this might not work without the matcher living on its own.
-    - name: apply matcher
-      run: echo "::add-matcher::.github/problem-matchers/matcher.json"
+    # - name: apply matcher
+    #   run: echo "::add-matcher::.github/problem-matchers/matcher.json"
     
     
-    # - name: apply json matcher
-    #   run: echo "::add-matcher::jsonval-matcher.json"
+    - name: apply json matcher
+      run: echo "::add-matcher::jsonval-matcher.json"
 
     - name: dumb test
       run: |
