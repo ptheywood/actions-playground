@@ -61,10 +61,10 @@ jobs:
         set -o pipefail
         cmake --build . --target all_cpplint |& tee cpplint.log
 
-    - name: generate annotations
-      if: ${{ failure() && steps.lint.outcome == 'failure' }}
-      working-directory: build
-      run: python3 ../scripts/actions-cpplint-annotations.py
+    # - name: generate annotations
+    #   if: ${{ failure() && steps.lint.outcome == 'failure' }}
+    #   working-directory: build
+    #   run: python3 ../scripts/actions-cpplint-annotations.py
 
        
 
