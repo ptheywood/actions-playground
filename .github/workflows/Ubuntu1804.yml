@@ -54,7 +54,7 @@ jobs:
 
     - name: dumb test
       run: |
-        echo "WARN: myconfig.json:1:9: Missing attribute 'age'"
+        echo "WARN: myconfig.json:1:4: Unexpected token '}'"
 
     - name: dumb test
       run: |
