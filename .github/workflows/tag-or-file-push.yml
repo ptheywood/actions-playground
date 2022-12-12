@@ -1,0 +1,30 @@
+# Workflow for tags and releases
+name: tag
+
+# Workflow which runs on push to a v. tag, or on pushes to branhc events which include a modification of this file. 
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' 
+    paths:
+      - ".github/workflows/tag-or-file-push.yml"
+
+jobs:
+  do_tag:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Configure
+        run: cmake . -B build
+        shell: bash
+
+      # - name: build
+      #   run: cmake --build . --target all 
+      #   working-directory: build
