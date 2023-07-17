@@ -1,0 +1,43 @@
+# Workflow tsting replacement for ::set-output
+name: setoutputdeprecated
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  setoutputdeprecated:
+    runs-on: ubuntu-20.04
+
+    # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
+    env:
+      CMAKE: ${{ matrix.cmake }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Set variable using deprecated method
+    - name: Process Tag (Deprecated)
+      id: tag_deprecated
+      run: |
+        tag="test-tag-deprecated"
+        echo "::set-output name=tag::${tag}"
+
+    # print the variable from the deprecated method
+    - name: Create Draft Release (Deprecated)
+      id: create_release_deprecated
+      run: |
+        echo "Tag: ${{ steps.tag_deprecated.outputs.tag }}"
+
+    # set the output variable using the new method
+    - name: Process Tag
+      id: tag
+      run: |
+        tag="test-tag-modern"
+        echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+    # print the output variable after using the new method
+    - name: Create Draft Release
+      id: create_release
+      run: |
+        echo "Tag: ${{ steps.tag.outputs.tag }}"
