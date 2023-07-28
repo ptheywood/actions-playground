@@ -23,12 +23,15 @@ jobs:
         pr_head_sha=$(curl --request GET \
         --url ${{ github.event.issue.pull_request.url }} \
         | jq --raw-output -e '.head.sha')
-        echo "::set-output name=pr_head_sha::$pr_head_sha"
+        # echo "::set-output name=pr_head_sha::$pr_head_sha" >> 
+        echo "{pr_head_sha}={${pr_head_sha}}" >> $GITHUB_STATE
+
 
     # @todo - switch to checks api once out of beta-this has the skipped option.
     - name: Register Pending
       id: register_pending
       run: |
+        echo "outputs.pr_head_sha {{ outputs.pr_head_sha }}"
         curl --request POST \
         --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
