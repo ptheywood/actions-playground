@@ -18,8 +18,8 @@ jobs:
             version: "apt"
           - lib: "openmpi"
             version: "4.1.6"
-          # - lib: "openmpi"
-          #   version: "3.19.0"
+          - lib: "openmpi"
+            version: "invalid"
           # - lib: "openmpi"
           #   version: "3.18.0"
           
@@ -42,8 +42,12 @@ jobs:
       if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'openmpi' }}
       working-directory: ${{ runner.temp }}
       run: |
-        wget -q https://github.com/open-mpi/ompi/archive/refs/tags/v${{ env.MPI_VERSION }}.tar.gz --output-document openmpi-${{ env.MPI_VERSION }}.tar.gz || echo "Error occured while downloading OpenMPI ${{ env.MPI_VERSION }}. Is it valid?"
+        wget -q https://github.com/open-mpi/ompi/archive/refs/tags/v${{ env.MPI_VERSION }}.tar.gz --output-document openmpi-${{ env.MPI_VERSION }}.tar.gz || (echo "Error occured while downloading OpenMPI ${{ env.MPI_VERSION }}. Is it valid?" && exit 1)
         tar -zxvf openmpi-${{ env.MPI_VERSION }}.tar.gz
+        cd ompi-${{ env.MPI_VERSION}}
+        ./configure --prefix="${{ runner.temp }}/mpi"
+        make -j `nproc`
+        make install -j `nproc`
 
     - name: test
       run: |
