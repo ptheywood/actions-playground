@@ -18,8 +18,8 @@ jobs:
             version: "apt"
           - lib: "openmpi"
             version: "4.1.6"
-          - lib: "openmpi"
-            version: "invalid"
+          # - lib: "openmpi"
+            # version: "invalid"
           # - lib: "openmpi"
           #   version: "3.18.0"
           
@@ -46,8 +46,8 @@ jobs:
         MPI_VERISON_MAJOR_MINOR=$(cut -d '.' -f 1,2 <<< "${{ env.MPI_VERSION}}")
         echo ${MPI_VERISON_MAJOR_MINOR}
         echo $MPI_VERISON_MAJOR_MINOR
-        echo "https://download.open-mpi.org/release/open-mpi/${MPI_VERISON_MAJOR_MINOR}/openmpi-${{ env.MPI_VERSION}}.tar.gz"
-        wget -q https://download.open-mpi.org/release/open-mpi/${MPI_VERISON_MAJOR_MINOR}/openmpi-${{ env.MPI_VERSION}}.tar.gz --output-document openmpi-${{ env.MPI_VERSION }}.tar.gz || (echo "An Error occurred while downloading OpenMPI '${{ env.MPI_VERSION }}'. Is it a valid version of OpenMPI?" && exit 1)
+        echo "https://download.open-mpi.org/release/open-mpi/v${MPI_VERISON_MAJOR_MINOR}/openmpi-${{ env.MPI_VERSION}}.tar.gz"
+        wget -q https://download.open-mpi.org/release/open-mpi/v${MPI_VERISON_MAJOR_MINOR}/openmpi-${{ env.MPI_VERSION}}.tar.gz --output-document openmpi-${{ env.MPI_VERSION }}.tar.gz || (echo "An Error occurred while downloading OpenMPI '${{ env.MPI_VERSION }}'. Is it a valid version of OpenMPI?" && exit 1)
         tar -zxvf openmpi-${{ env.MPI_VERSION }}.tar.gz
         cd ompi-${{ env.MPI_VERSION}}
         ./configure --prefix="${{ runner.temp }}/mpi"
