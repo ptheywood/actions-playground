@@ -80,9 +80,7 @@ jobs:
         wget -q https://www.mpich.org/static/downloads/${{ env.MPI_VERSION }}/mpich-${{ env.MPI_VERSION}}.tar.gz --output-document mpich-${{ env.MPI_VERSION }}.tar.gz || (echo "An Error occurred while downloading MPICH '${{ env.MPI_VERSION }}'. Is it a valid version of MPICH?" && exit 1)
         tar -zxvf mpich-${{ env.MPI_VERSION }}.tar.gz
         cd mpich-${{ env.MPI_VERSION}}
-        # Unset the FC env var to try and prevent fotran bindings, given teh disable fotran options change a lot with different mpich versions (--disable-fortran in recent to disable all, --disable-f77 --disable-fc for 3.0, extra ones in the middle)
-        FC=
-        ./configure --prefix="${{ runner.temp }}/mpi" --with-device=ch3
+        ./configure --prefix="${{ runner.temp }}/mpi" --with-device=ch3 --disable-f77
         make -j `nproc`
         make install -j `nproc`
         echo "${{ runner.temp }}/mpi/bin" >> $GITHUB_PATH
