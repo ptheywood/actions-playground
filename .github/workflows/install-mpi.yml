@@ -17,7 +17,7 @@ jobs:
           - lib: "openmpi"
             version: "apt"
           - lib: "openmpi"
-            version: "3.20.1"
+            version: "4.1.6"
           # - lib: "openmpi"
           #   version: "3.19.0"
           # - lib: "openmpi"
