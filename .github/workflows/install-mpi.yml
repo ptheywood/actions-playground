@@ -83,9 +83,10 @@ jobs:
         tar -zxvf mpich-${{ env.MPI_VERSION }}.tar.gz
         cd mpich-${{ env.MPI_VERSION}}
         DISABLE_FORTRAN_FLAGS=""
-        if [[ ${MPI_MAJOR} >= 4 || (${MPI_MAJOR} >= 3 && ${MPI_MINOR} >= 2) ]]; then
+        if (( ${MPI_MAJOR} >= 4 )) || ( ((${MPI_MAJOR} >= 3)) && ((${MPI_MINOR} >= 2)) ); then
+            # MPICH >= 3.2 has --disable-fortran
             DISABLE_FORTRAN_FLAGS="--disable-fortran" 
-        elif [[ ${MPI_MAJOR} > 3 ]]; then
+        else
             DISABLE_FORTRAN_FLAGS="--disable-f77 --disable-fc"
         fi
         ./configure --prefix="${{ runner.temp }}/mpi" --with-device=ch3 ${DISABLE_FOTRAN_FLAGS}
