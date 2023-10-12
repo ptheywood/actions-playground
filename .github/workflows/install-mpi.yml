@@ -19,9 +19,27 @@ jobs:
           - lib: "openmpi"
             version: "4.1.6"
           # - lib: "openmpi"
-            # version: "invalid"
+          #   version: "4.0.0"
           # - lib: "openmpi"
-          #   version: "3.18.0"
+          #   version: "3.0.0"
+          # - lib: "openmpi"
+          #   version: "2.0.0"
+          # - lib: "openmpi"
+          #   version: "1.10.7"
+          - lib: "mpich"
+            version: "apt"
+          # - lib: "mpich"
+          #   version: "4.1.2"
+          # - lib: "mpich"
+          #   version: "4.1.2"
+          # - lib: "mpich"
+          #   version: "4.1.2"
+          # - lib: "mpich"
+          #   version: "4.1.2"
+          # - lib: "mpich"
+          #   version: "4.1.2"
+          # - lib: "mpich"
+          #   version: "4.1.2"
           
 
     # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
@@ -55,8 +73,17 @@ jobs:
         make install -j `nproc`
         echo "${{ runner.temp }}/mpi/bin" >> $GITHUB_PATH
         echo "LD_LIBRARY_PATH=${{ runner.temp }}/mpi/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "LD_RUN_PATH=${{ runner.temp }}/mpi/lib:${LD_RUN_PATH}" >> $GITHUB_ENV
 
-        which mpirun
+    # https://www.mpich.org/static/downloads/1.0.1/mpich2-1.0.1.tar.gz
+    # https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
+    # https://www.mpich.org/static/downloads/3.0/mpich-3.0.tar.gz
+    # https://www.mpich.org/static/downloads/3.1.2/mpich-3.1.2.tar.gz
+    # - name: Install MPICH from source
+    #   if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'mpich' }}
+    #   working-directory: ${{ runner.temp }}
+    #   run: |
+
 
     - name: test
       run: |
