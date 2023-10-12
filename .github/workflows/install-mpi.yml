@@ -1,0 +1,55 @@
+# Install MPI into the github actions runnner, via apt or from source.
+name: cmake
+
+on:
+  push:
+    paths:
+      # this workflow.
+      - ".github/workflows/install-mpi.yml"
+
+jobs:
+  configure:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        mpi:
+          - lib: "openmpi"
+            version: "apt"
+          - lib: "openmpi"
+            version: "3.20.1"
+          # - lib: "openmpi"
+          #   version: "3.19.0"
+          # - lib: "openmpi"
+          #   version: "3.18.0"
+          
+
+    # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
+    env:
+      MPI_LIB: ${{ matrix.mpi.lib }}
+      MPI_VERSION: ${{ matrix.mpi.version }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install MPI from apt
+      if: ${{ env.MPI_VERSION == 'apt' }}
+      working-directory: ${{ runner.temp }}
+      run: |
+        apt-get install lib${{ env.MPI_LIB }}-dev
+
+    - name: Install OpenMPI from source
+      if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'openmpi' }}
+      working-directory: ${{ runner.temp }}
+      run: |
+        wget -q https://github.com/open-mpi/ompi/archive/refs/tags/v${{ env.MPI_VERSION }}.tar.gz --output-document openmpi-${{ env.MPI_VERISON }}.tar.gz
+        ls 
+        tar -zxvf openmpi-${{ env.MPI_VERISON }}.tar.gz
+        ls
+        ls openmpi-${{ env.MPI_VERISON }}
+
+
+
+    - name: test
+      run: |
+        mpirun --version
