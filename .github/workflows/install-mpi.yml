@@ -36,17 +36,17 @@ jobs:
       if: ${{ env.MPI_VERSION == 'apt' }}
       working-directory: ${{ runner.temp }}
       run: |
-        apt-get install lib${{ env.MPI_LIB }}-dev
+        sudo apt-get install lib${{ env.MPI_LIB }}-dev
 
     - name: Install OpenMPI from source
       if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'openmpi' }}
       working-directory: ${{ runner.temp }}
       run: |
-        wget -q https://github.com/open-mpi/ompi/archive/refs/tags/v${{ env.MPI_VERSION }}.tar.gz --output-document openmpi-${{ env.MPI_VERISON }}.tar.gz
+        wget -q https://github.com/open-mpi/ompi/archive/refs/tags/v${{ env.MPI_VERSION }}.tar.gz --output-document openmpi-${{ env.MPI_VERSION }}.tar.gz
         ls 
-        tar -zxvf openmpi-${{ env.MPI_VERISON }}.tar.gz
+        tar -zxvf openmpi-${{ env.MPI_VERSION }}.tar.gz
         ls
-        ls openmpi-${{ env.MPI_VERISON }}
+        ls openmpi-${{ env.MPI_VERSION }}
 
 
 
