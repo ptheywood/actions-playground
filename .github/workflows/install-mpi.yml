@@ -36,9 +36,7 @@ jobs:
             version: "3.4.3"
           - lib: "mpich"
             version: "3.0"
-          - lib: "mpich"
-            version: "1.5"
-          
+
 
     # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
     env:
@@ -77,6 +75,7 @@ jobs:
       if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'mpich' }}
       working-directory: ${{ runner.temp }}
       run: |
+        [[ $(cut -d '.' -f 1,2 <<< "${{ env.MPI_VERSION}}") < 3 ]] && echo "MPICH must be >= 3.0" && exit 1
         echo "https://www.mpich.org/static/downloads/${{ env.MPI_VERSION }}/mpich-${{ env.MPI_VERSION}}.tar.gz"
         wget -q https://www.mpich.org/static/downloads/${{ env.MPI_VERSION }}/mpich-${{ env.MPI_VERSION}}.tar.gz --output-document mpich-${{ env.MPI_VERSION }}.tar.gz || (echo "An Error occurred while downloading MPICH '${{ env.MPI_VERSION }}'. Is it a valid version of MPICH?" && exit 1)
         tar -zxvf mpich-${{ env.MPI_VERSION }}.tar.gz
@@ -87,7 +86,6 @@ jobs:
         echo "${{ runner.temp }}/mpi/bin" >> $GITHUB_PATH
         echo "LD_LIBRARY_PATH=${{ runner.temp }}/mpi/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
         echo "LD_RUN_PATH=${{ runner.temp }}/mpi/lib:${LD_RUN_PATH}" >> $GITHUB_ENV
-
 
     - name: test
       run: |
