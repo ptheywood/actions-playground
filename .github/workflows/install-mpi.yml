@@ -89,7 +89,7 @@ jobs:
         else
             DISABLE_FORTRAN_FLAGS="--disable-f77 --disable-fc"
         fi
-        ./configure --prefix="${{ runner.temp }}/mpi" --with-device=ch3 ${DISABLE_FOTRAN_FLAGS}
+        ./configure --prefix="${{ runner.temp }}/mpi" --with-device=ch3 ${DISABLE_FORTRAN_FLAGS}
         make -j `nproc`
         make install -j `nproc`
         echo "${{ runner.temp }}/mpi/bin" >> $GITHUB_PATH
