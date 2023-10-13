@@ -18,14 +18,14 @@ jobs:
             version: "apt"
           - lib: "openmpi"
             version: "4.1.6"
-          # - lib: "openmpi"
-          #   version: "4.0.0"
-          # - lib: "openmpi"
-          #   version: "3.0.0"
-          # - lib: "openmpi"
-          #   version: "2.0.0"
-          # - lib: "openmpi"
-          #   version: "1.10.7"
+          - lib: "openmpi"
+            version: "4.0.0"
+          - lib: "openmpi"
+            version: "3.0.0"
+          - lib: "openmpi"
+            version: "2.0.0"
+          - lib: "openmpi"
+            version: "1.10.7"
           - lib: "mpich"
             version: "apt"
           - lib: "mpich"
@@ -36,12 +36,12 @@ jobs:
             version: "3.4.3"
           - lib: "mpich"
             version: "3.3"
-          - lib: "mpich"
-            version: "3.2"
-          - lib: "mpich"
-            version: "3.1"
-          - lib: "mpich"
-            version: "3.0"
+          # - lib: "mpich"
+          #   version: "3.2"
+          # - lib: "mpich"
+          #   version: "3.1"
+          # - lib: "mpich"
+          #   version: "3.0"
 
 
     # Define job-wide env constants, and promote matrix elements to env constants for portable steps.
@@ -75,7 +75,9 @@ jobs:
         echo "LD_LIBRARY_PATH=${{ runner.temp }}/mpi/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
         echo "LD_RUN_PATH=${{ runner.temp }}/mpi/lib:${LD_RUN_PATH}" >> $GITHUB_ENV
 
-    # This will only work for mpich >= 3.0, as 1.x is for mpich2 so requires handling differently
+    # This will only work for mpich >= 3.3:
+    #   3.0-3.2 doesn't appear compatible with default gcc in 22.04. 
+    #   1.x is named mpich2 so requires handling differently
     # Uses the ch3 interface, as ch4 isn't available pre 3.4, but one must be specified for some versions
     - name: Install MPICH from source
       if: ${{ env.MPI_VERSION != 'apt' && env.MPI_LIB == 'mpich' }}
