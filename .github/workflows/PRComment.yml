@@ -1,0 +1,125 @@
+# Run on PR comments, has to be in master for issue_comment to trigger.
+name: PRComment
+
+# @todo - package this up into a local action? so that it is  much cleaner in the workflow. Not sure if the IF can be packaged up.  
+
+# Trigger this workflow when a pr is commented on with a valid keyword, from a legit user, otherwise, don't. 
+on:
+  issue_comment:
+    types: [created, edited]
+
+# Run a job on PR open or issue comment.
+jobs:
+  run_on_pr_comment:
+    # Run on issue comments, to issues which are actually a pull request, from legit authors, who mention the magical trigger.
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association) && startsWith(github.event.comment.body, '!actions-full-ci')
+    runs-on: ubuntu-18.04
+    steps:
+
+    # Get the sha of the head from the api for this pull request.
+    - name: get_pr_sha
+      id: get_pr_sha
+      run: |
+        pr_head_sha=$(curl --request GET \
+        --url ${{ github.event.issue.pull_request.url }} \
+        | jq --raw-output -e '.head.sha')
+        echo "::set-output name=pr_head_sha::$pr_head_sha"
+
+    # @todo - switch to checks api once out of beta-this has the skipped option.
+    - name: Register Pending
+      id: register_pending
+      run: |
+        curl --request POST \
+        --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "state": "pending",
+          "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
+          "description": "Pending",
+          "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.comment.url }}/reactions \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'Accept: application/vnd.github.squirrel-girl-preview' \
+        --header 'content-type: application/json' \
+        --data '{
+          "content": "rocket"
+        }'
+
+    # @todo - make this do the merged ref rather aswell / in place of the HEAD ref?
+    # If the pull_request.url returns mergable, merge_commit_sha will contain the relevant ref. 
+    # Possibly dupe this to a second job within here? Or have job1 which fetches info, makes the comment, job 2/3 which do the ci, and job 4 which updates comments?
+    - uses: actions/checkout@v2
+      with: 
+        ref: ${{ steps.get_pr_sha.outputs.pr_head_sha }}
+
+    - name: run-on-pr-comment
+      run: | 
+        echo "Successfully triggered by ${{ github.event.comment.user.login }} ( ${{ github.event.comment.author_association }})"
+        echo "  commenting on PR ${{ github.event.issue.number }}"
+        echo "  which contains trigger phrase '!FullCI'"
+        echo "  comment:"
+        echo "${{ github.event.comment.body }}" 
+  
+    # @todo - switch to checks api once out of beta-this has the skipped option.
+    # @todo - make the comment reference the relevant issue to track which is which (in case of out of order?) 
+    - name: Report Success
+      if: success()
+      run: |
+        curl --request POST \
+        --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "state": "success",
+          "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
+          "description": "Success",
+          "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.issue.comments_url }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": "**Successful** GitHub Action :+1: \n[${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.comment.url }}/reactions \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'Accept: application/vnd.github.squirrel-girl-preview' \
+        --header 'content-type: application/json' \
+        --data '{
+          "content": "+1"
+        }'
+        
+    # @todo - switch to checks api once out of beta-this has the skipped option.
+    - name: Report Failure
+      if: failure()
+      run: |
+        curl --request POST \
+        --url ${{ github.event.repository.url }}/statuses/${{ steps.get_pr_sha.outputs.pr_head_sha }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "state": "failure",
+          "target_url": "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}",
+          "description": "failure",
+          "context": "${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.issue.comments_url }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": "**Failed** GitHub Action :-1: \n[${{ github.workflow }} / ${{ github.job }} (${{ github.event_name }})](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+        }' | jq --raw-output -e '.id' && \
+        curl --request POST \
+        --url ${{ github.event.comment.url }}/reactions \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'Accept: application/vnd.github.squirrel-girl-preview' \
+        --header 'content-type: application/json' \
+        --data '{
+          "content": "-1"
+        }'
