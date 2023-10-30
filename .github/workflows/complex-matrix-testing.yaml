@@ -1,0 +1,73 @@
+# CI with complex matrices - i.e. FLAME GPU builds. 
+# Nested matrix options appear to work, but the web-editor says they are unsupported, and include/exclude stuff doesn't fully behave.
+# This is for testing / prototyping. 
+name: complex-matrix-testing
+
+# Run on pushes that modify this workflow, or pull requests which do.
+on:
+  push:
+    paths:
+      # Add everything
+      - "**"
+      # Exclude some things
+      - "!.github/**"
+      # Re-include special cases
+      - ".github/workflows/complex-matrix-testing.yml"
+  # Trigger on all PRs?
+  pull_request:
+    paths:
+      # Add everything
+      - "**"
+      # Exclude some things
+      - "!.github/**"
+      # Re-include special cases
+      - ".github/workflows/complex-matrix-testing.yml"
+
+jobs:
+  build:
+    runs-on:  ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cudacxx:
+          - cuda: "12.3"
+            cuda_arch: "50"
+            hostcxx: gcc-12
+            os: ubuntu-22.04
+          - cuda: "11.8"
+            cuda_arch: "35"
+            hostcxx: gcc-11
+            os: ubuntu-22.04
+        config:
+          - name: "Release"
+            config: "Release"
+            SEATBELTS: "ON"
+          - name: "Fast"
+            config: "Release"
+            SEATBELTS: "OFF"
+        exclude:
+          # Exclude VIS=ON for old cuda's.
+          - cudacxx:
+              cuda: "11.8"
+            config:
+              SEATBELTS: "OFF"
+    env:
+      CUDA: ${{ matrix.cudacxx.cuda }}
+      CUDA_ARCH: ${{ matrix.cudacxx.cuda_arch }}
+      HOSTCXX: ${{ matrix.cudacxx.hostcxx }}
+      OS: ${{ matrix.cudacxx.os }}
+      CONFIG: ${{ matrix.config.config }}
+      SEATBELTS: ${{ matrix.config.SEATBELTS }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Output the selected matrix options
+    - name: Output Matrix info
+      run: | 
+        echo "CUDA = ${{ env.CUDA }}"
+        echo "CUDA_ARCH = ${{ env.CUDA_ARCH }}"
+        echo "HOSTCXX = ${{ env.HOSTCXX }}"
+        echo "OS = ${{ env.OS }}"
+        echo "CONFIG = ${{ env.CONFIG }}"
+        echo "SEATBELTS = ${{ env.SEATBELTS }}"
