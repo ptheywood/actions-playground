@@ -21,7 +21,7 @@ on:
       # Exclude some things
       - "!.github/**"
       # Re-include special cases
-      - ".github/workflows/complex-matrix-testing.yml"
+      - ".github/workflows/complex-matrix-testing.yaml"
 
 jobs:
   build:
