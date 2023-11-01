@@ -45,12 +45,17 @@ jobs:
           - name: "Fast"
             config: "Release"
             SEATBELTS: "OFF"
+        visualisation: 
+          - "ON"
+          - "OFF"
         exclude:
-          # Exclude VIS=ON for old cuda's.
           - cudacxx:
               cuda: "11.8"
             config:
               SEATBELTS: "OFF"
+          - cudacxx:
+              cuda: "11.8"
+            visualisation: "ON"
     env:
       CUDA: ${{ matrix.cudacxx.cuda }}
       CUDA_ARCH: ${{ matrix.cudacxx.cuda_arch }}
@@ -58,6 +63,7 @@ jobs:
       OS: ${{ matrix.cudacxx.os }}
       CONFIG: ${{ matrix.config.config }}
       SEATBELTS: ${{ matrix.config.SEATBELTS }}
+      VISUALISATION: ${{ matrix.visualisation }}
 
     steps:
     - uses: actions/checkout@v2
@@ -71,3 +77,4 @@ jobs:
         echo "OS = ${{ env.OS }}"
         echo "CONFIG = ${{ env.CONFIG }}"
         echo "SEATBELTS = ${{ env.SEATBELTS }}"
+        echo "VISUALISATION = ${{ env.VISUALISATION }}"
