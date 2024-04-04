@@ -1,0 +1,31 @@
+name: Ubuntu-apt-downgrade
+
+# Only build if relevant files changes?
+on:
+  push:
+    branches: [ "**" ]
+    paths:
+      - ".github/workflows/ubuntu-apt-downgrade.yml"
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-20.04"
+          - "ubuntu-22.04"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: List OS
+      run: |
+        cat /etc/os-release
+
+    - name: Show installed libexpat versions
+      run: |
+        dpkg -l | grep libexpat1
