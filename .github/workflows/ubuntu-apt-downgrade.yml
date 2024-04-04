@@ -26,6 +26,15 @@ jobs:
       run: |
         cat /etc/os-release
 
+    - name: Dump job context
+      env:
+        JOB_CONTEXT: ${{ toJson(job) }}
+      run: echo "$JOB_CONTEXT"
+
+    - name: Dump runner context
+      env:
+        RUNNER_CONTEXT: ${{ toJson(runner) }}
+      run: echo "$RUNNER_CONTEXT"
     - name: Show installed libexpat versions
       run: |
         dpkg -l | grep libexpat1
