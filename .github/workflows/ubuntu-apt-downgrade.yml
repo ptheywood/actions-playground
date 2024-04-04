@@ -31,5 +31,13 @@ jobs:
         dpkg -l | grep libexpat1
 
 
+    - name: Downgrade libexpat
+      run: |
+        if dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3; then
+          apt install libexpat1=2.4.7-1 libexpat1-dev=2.4.7-1
+          apt-mark hold libexpat1 libexpat1-dev
+        fi
+
+
     - name: Error if bad libexpat1-dev
       run: dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3
