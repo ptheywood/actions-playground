@@ -32,4 +32,4 @@ jobs:
 
 
     - name: Error if bad libexpat1-dev
-      run: dpkg -l | grep libexpat1-dev | grep 2.4.7-1-ubuntu0.3
+      run: dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3
