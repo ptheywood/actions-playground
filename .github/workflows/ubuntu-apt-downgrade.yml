@@ -40,6 +40,7 @@ jobs:
         dpkg -l | grep libexpat1
 
     - name: Downgrade libexpat
+      if: ${{ runner.os == 'Linux' && job.container == null && matrix.os == 'ubuntu-22.04' }}
       run: |
         if dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3; then
           sudo apt-get install -y --allow-downgrades libexpat1=2.4.7-1 libexpat1-dev=2.4.7-1
