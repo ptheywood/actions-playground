@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   # Run via cron at 1400, 1405 and 1410
   schedule:
-    - cron: '00,05,10 14 * * *'
+    - cron: '22,27,30 14 * * *'
 
 jobs:
   build:
