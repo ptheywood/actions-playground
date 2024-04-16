@@ -18,8 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - "ubuntu-20.04"
-          # - "ubuntu-22.04"
+          # - "ubuntu-20.04"
+          - "ubuntu-22.04"
         container:
           - "ubuntu:jammy"
           - null
@@ -40,6 +40,11 @@ jobs:
       env:
         RUNNER_CONTEXT: ${{ toJson(runner) }}
       run: echo "$RUNNER_CONTEXT"
+
+    - name: Install libexpat in container
+      if: ${{ job.container != null }}
+      run: sudo apt-get install -y libexpat1 libexpat1-dev
+
     - name: Show installed libexpat versions
       run: |
         dpkg -l | grep libexpat1 || true
@@ -54,7 +59,7 @@ jobs:
 
     - name: Show installed libexpat versions
       run: |
-        dpkg -l | grep libexpat1
+        dpkg -l | grep libexpat1 || true
 
     - name: Error if bad libexpat1-dev
       run: dpkg -l | grep libexpat1-dev | grep -v 2.4.7-1ubuntu0.3 
