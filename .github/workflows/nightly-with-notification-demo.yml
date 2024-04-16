@@ -1,13 +1,12 @@
 # Workflow run by cron (or manually) which will add a comment to a specific issue when the job passes once and only once?
-name: Nightly-with-notification
+name: Nightly-with-notification-demo
 
-# 
 on:
+  # Run via cron at 45 mins after every hour.
+  schedule:
+    - cron: '45 * * * *'
   # allow manual dispatch
   workflow_dispatch:
-  # Run via cron at 1400, 1405 and 1410
-  schedule:
-    - cron: '35,45 13-14 * * *'
 
 jobs:
   build:
