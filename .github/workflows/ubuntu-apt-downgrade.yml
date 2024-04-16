@@ -42,7 +42,7 @@ jobs:
       run: echo "$RUNNER_CONTEXT"
     - name: Show installed libexpat versions
       run: |
-        dpkg -l | grep libexpat1
+        dpkg -l | grep libexpat1 || true
 
     - name: Downgrade libexpat
       if: ${{ (runner.os == 'Linux' && matrix.os == 'ubuntu-22.04') || job.container != null }}
