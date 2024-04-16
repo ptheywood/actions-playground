@@ -12,12 +12,17 @@ on:
 jobs:
   build:
     runs-on:  ${{ matrix.os }}
+    container:
+      image: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
         os:
           - "ubuntu-20.04"
-          - "ubuntu-22.04"
+          # - "ubuntu-22.04"
+        container:
+          - "ubuntu:jammy"
+          - null
 
     steps:
     - uses: actions/checkout@v2
