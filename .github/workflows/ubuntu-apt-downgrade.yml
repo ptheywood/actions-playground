@@ -43,7 +43,7 @@ jobs:
 
     - name: Install libexpat in container (no sudo in container)
       if: ${{ job.container != null }}
-      run: apt-get install -y libexpat1 libexpat1-dev
+      run: apt-get update && apt-get install -y libexpat1 libexpat1-dev
 
     - name: Show installed libexpat versions
       run: |
