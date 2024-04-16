@@ -3,16 +3,11 @@ name: Nightly-with-notification
 
 # 
 on:
-  # Run on push for now, for easy testing.
-  push:
-    branches: [ "**" ]
-    paths:
-      - ".github/workflows/nightly-with-notification.yml"
   # allow manual dispatch
   workflow_dispatch:
-  # Run via cron every night, at 03:23
+  # Run via cron at 1400, 1405 and 1410
   schedule:
-    - cron: '23 3 * * *'
+    - cron: '00,05,10 14 * * *'
 
 jobs:
   build:
@@ -47,7 +42,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_REPO: ${{ github.repository }}
-        NUMBER: 23
+        NUMBER: 24
         BODY: |
           ${{ github.workflow }} passed.
           See [${{ github.repository }}/actions/runs/${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
