@@ -25,7 +25,7 @@ jobs:
           - null
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: List OS
       run: |
@@ -41,9 +41,9 @@ jobs:
         RUNNER_CONTEXT: ${{ toJson(runner) }}
       run: echo "$RUNNER_CONTEXT"
 
-    - name: Install libexpat in container
+    - name: Install libexpat in container (no sudo in container)
       if: ${{ job.container != null }}
-      run: sudo apt-get install -y libexpat1 libexpat1-dev
+      run: apt-get install -y libexpat1 libexpat1-dev
 
     - name: Show installed libexpat versions
       run: |
