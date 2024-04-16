@@ -1,0 +1,62 @@
+# Workflow run by cron (or manually) which will add a comment to a specific issue when the job passes once and only once?
+name: Nightly-with-notification
+
+# 
+on:
+  # Run on push for now, for easy testing.
+  push:
+    branches: [ "**" ]
+    paths:
+      - ".github/workflows/nightly-with-notification.yml"
+  # allow manual dispatch
+  workflow_dispatch:
+  # Run via cron every night, at 03:23
+  schedule:
+    - cron: '23 3 * * *'
+
+jobs:
+  build:
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-22.04"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Downgrade libexpat
+      if: ${{ (runner.os == 'Linux' && matrix.os == 'ubuntu-22.04') || job.container != null }}
+      run: |
+        if dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3; then
+          sudo apt-get install -y --allow-downgrades libexpat1=2.4.7-1 libexpat1-dev=2.4.7-1
+          sudo apt-mark hold libexpat1 libexpat1-dev
+        fi
+
+    - name: Show installed libexpat versions
+      run: |
+        dpkg -l | grep libexpat1
+
+    - name: Error if bad libexpat1-dev
+      run: dpkg -l | grep libexpat1-dev | grep -v 2.4.7-1ubuntu0.3
+
+    - name: Leave comment on success
+      if: success()
+      run: gh issue comment "$NUMBER" --body "$BODY"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        NUMBER: 23
+        BODY: |
+          ${{ github.workflow }} passed.
+          See [${{ github.repository }}/actions/runs/${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+          It should now be possible to disable/remove this workflow and associated workarounds in other workflows.
+
+    - name: Self-disable the workflow to avoid spam once it succeeds
+      if: success()
+      run: gh workflow disable "$WORKFLOW_NAME"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WORKFLOW_NAME: ${{ github.workflow }}
