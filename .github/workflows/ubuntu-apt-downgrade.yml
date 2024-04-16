@@ -49,12 +49,18 @@ jobs:
       run: |
         dpkg -l | grep libexpat1 || true
 
-    - name: Downgrade libexpat
-      if: ${{ (runner.os == 'Linux' && matrix.os == 'ubuntu-22.04') || job.container != null }}
+    - name: Downgrade libexpat (native ubuntu-22.04 only)
+      if: ${{ (runner.os == 'Linux' && matrix.os == 'ubuntu-22.04') && job.container == null }}
       run: |
         if dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3; then
           sudo apt-get install -y --allow-downgrades libexpat1=2.4.7-1 libexpat1-dev=2.4.7-1
-          sudo apt-mark hold libexpat1 libexpat1-dev
+        fi
+
+    - name: Downgrade libexpat (container only)
+      if: ${{ job.container != null }}
+      run: |
+        if dpkg -l | grep libexpat1-dev | grep 2.4.7-1ubuntu0.3; then
+          apt-get install -y --allow-downgrades libexpat1=2.4.7-1 libexpat1-dev=2.4.7-1
         fi
 
     - name: Show installed libexpat versions
