@@ -1,0 +1,40 @@
+# Action to be triggered when a PR is reviewed by an authorized member
+# This should *not* be triggered by the PR itself, as that would invalidate the idea that it is only done when an approval comes in.
+# @todo - trigger only when PRR is an approval, and the CI hasn't ran for that commit yet.
+# @todo - investigate what PRR objects look like 
+# @todo - investigate what happens when new push to an approved branch? 
+# @todo - don't re run on an edit when state doesn't change?
+# @todo - make sure the reviewer has some level of authority (appears approvals don't require team membersip?)
+# @todo - how could this work for single-user projects (not sure it does, can't review your own PRs.)
+
+
+name: approvedPR
+
+on:
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+jobs:
+  run_on_review:
+    if: github.event_name == 'pull_request_review'
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: dump github context
+      run: echo "run-on-prr"
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: prr-action
+      run: | 
+        echo "github.event.action = ${{ github.event.action }}"
+        echo "github.event.review.state = ${{ github.event.review.state }}"
+
+    - name: prr_if_has_label_FullCI
+      if: contains(github.event.pull_request.labels.*.name, 'FullCI')
+      run: echo "review for PR ${{ github.event.pull_request.number }} which has FullCI label"
+
+    # "state": "APPROVED"
+    # - name: pr_if_has_label_FullCI
+    #   if: contains(github.event.pull_request.labels.*.name, 'FullCI')
+    #   run: echo "PR ${{ github.event.pull_request.number }} Has FullCI label"
